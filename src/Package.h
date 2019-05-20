@@ -6,14 +6,10 @@
 class Package {
 private:
 	int identifier; //is this the best option?
-	Point PickUpPoint; //??
-	Point DeliveryPoint;
+	Point *PickUpPoint; //??
+	Point * DeliveryPoint;
 public:
-	Package(int id, Point PUP, Point DP){
-		this->identifier = id;
-		this->PickUpPoint = PUP;
-		this->DeliveryPoint = DP;
-	}
+	Package(int id, Point PUP, Point DP);
 	int getIdentifier(){
 		return this->identifier;
 	}

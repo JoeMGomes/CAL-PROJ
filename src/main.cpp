@@ -104,10 +104,9 @@ void displayMap() {
     }
 }
 
-
 int main() {
     initMap();
-    readMap("Porto");
+    readMap("Aveiro");
     displayMap();
     getchar();
     return 0;
