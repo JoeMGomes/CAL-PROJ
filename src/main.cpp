@@ -9,17 +9,16 @@
 #endif
 
 void inicia() {
-	GraphViewer *gv = new GraphViewer(600, 600, false);
-	gv->createWindow(80000, 80000);
+	GraphViewer *gv = new GraphViewer(1000, 700, false);
+	gv->createWindow(1000, 700);
 	gv->defineVertexColor("blue");
 	gv->defineEdgeColor("black");
 
 	gv->addNode(1, 1, 1);
-	gv->addNode(2, 1000, 1000);
-	gv->addNode(3, 10000, 10000);
-	gv->addNode(4, 100000, 100000);
+	gv->addNode(2, 30, 30);
+	gv->addNode(3, 800, 600);
 	ifstream file;
-	file.open("T09/Porto/T09_nodes_X_Y_Porto.txt");
+	file.open("T09/Fafe/T09_nodes_X_Y_Fafe.txt");
 	//f.open("nos.txt");
 
 	if (!file) {
@@ -36,10 +35,10 @@ void inicia() {
 	while (getline(file,line) && numNos != 0) {
 		cout << numNos << endl;
 		sscanf(line.c_str(),"(%lf, %lf, %lf)", &id, &x,&y);
-		gv->addNode(id, x, y);
+		gv->addNode(id, 25*(x/100-5670), 25*(y/100-45872));
 		numNos--;
 	}
-	cout << "Completed reading " << numNos << "nodes\n";//vai dar sempre 0, é estupido
+	cout << "Completed reading nodes\n";
 	file.close();
 
 	//gv->rearrange();
