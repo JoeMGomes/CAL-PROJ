@@ -25,17 +25,11 @@ Point * findPoint(int id){
 			return p;
 		}
 	}
+	return nullptr;
 }
 
 void readMap(string cityName) {
-	GraphViewer *gv = new GraphViewer(1000, 700, false);
-	gv->createWindow(1000, 700);
-	gv->defineVertexColor("blue");
-	gv->defineEdgeColor("black");
 
-	gv->addNode(1, 1, 1);
-	gv->addNode(2, 30, 30);
-	gv->addNode(3, 800, 600);
 	ifstream file;
 
 	string nodeFile = "T09/" + cityName + "/T09_nodes_X_Y_" + cityName + ".txt";
@@ -55,7 +49,6 @@ void readMap(string cityName) {
 	sscanf(line.c_str(), "%d", &temp); //numNos
 
 	while (getline(file, line) && temp != 0) {
-		cout << temp << endl;
 		sscanf(line.c_str(), "(%lf, %lf, %lf)", &id, &x, &y);
 		if (xOffset == 0 && yOffset == 0) {
 			xOffset = x;
@@ -79,7 +72,6 @@ void readMap(string cityName) {
 	sscanf(line.c_str(), "%d", &temp);
 	id = 0;
 	while (getline(file, line) && temp != 0) {
-		cout << temp << endl;
 		sscanf(line.c_str(), "(%lf, %lf)", &x, &y);
 
 		roads.push_back(new Road(id, findPoint(x), findPoint(y)));
@@ -102,7 +94,15 @@ void initMap() {
 
 void displayMap(){
 
+	for(auto p : points){
+		gv->addNode(p->getID(), p->getX(), p->getY());
+	}
+
+	for(auto e : roads){
+		gv->addEdge(e->getID(),e->getSource()->getID(),e->getDest()->getID(), EdgeType::UNDIRECTED);
+	}
 }
+
 
 int main() {
 	initMap();

@@ -16,6 +16,8 @@ public:
 	Point();
 	Point(int id, int x, int y);
 	int getID();
+	int getX();
+	int getY();
 };
 
 #endif /* SRC_POINT_H_ */

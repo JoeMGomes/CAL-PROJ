@@ -12,7 +12,9 @@ private:
 	Point* dest;
 public:
 	Road(int id, Point * source, Point* dest);
-
+	int getID();
+	Point *getSource();
+	Point *getDest();
 
 };
 

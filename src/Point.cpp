@@ -15,3 +15,10 @@ Point::Point(int id, int x, int y) {
 int Point::getID(){
 	return this->id;
 }
+
+int Point::getX(){
+	return this->x;
+}
+int Point::getY(){
+	return this->y;
+}
