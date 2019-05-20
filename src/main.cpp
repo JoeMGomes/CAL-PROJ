@@ -3,12 +3,31 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <string>
+#include <vector>
+
+#include "Point.h"
+#include "Road.h"
 #ifdef linux
 #else
 #include <Windows.h>
 #endif
 
-void inicia() {
+//Variaveis globais because fuck it
+GraphViewer *gv;
+std::vector<Point*> points;
+std::vector<Road* > roads;
+
+Point * findPoint(int id){
+
+	for(auto p : points){
+		if(p->getID() == id){
+			return p;
+		}
+	}
+}
+
+void readMap(string cityName) {
 	GraphViewer *gv = new GraphViewer(1000, 700, false);
 	gv->createWindow(1000, 700);
 	gv->defineVertexColor("blue");
@@ -18,7 +37,9 @@ void inicia() {
 	gv->addNode(2, 30, 30);
 	gv->addNode(3, 800, 600);
 	ifstream file;
-	file.open("T09/Porto/T09_nodes_X_Y_Porto.txt");
+
+	string nodeFile = "T09/" + cityName + "/T09_nodes_X_Y_" + cityName + ".txt";
+	file.open(nodeFile);
 
 	if (!file) {
 		cout << "Failed to open node file\n";
@@ -28,26 +49,27 @@ void inicia() {
 	string line;
 	int temp;
 	double id, x, y;
-	int xOffset= 0, yOffset = 0;
+	int xOffset = 0, yOffset = 0;
 
 	getline(file, line);
 	sscanf(line.c_str(), "%d", &temp); //numNos
 
-
 	while (getline(file, line) && temp != 0) {
 		cout << temp << endl;
 		sscanf(line.c_str(), "(%lf, %lf, %lf)", &id, &x, &y);
-		if(xOffset == 0 && yOffset == 0){
+		if (xOffset == 0 && yOffset == 0) {
 			xOffset = x;
 			yOffset = y;
 		}
-		gv->addNode(id, x - xOffset, y - yOffset);
+		points.push_back(new Point(id, x - xOffset, y - yOffset));
 		temp--;
 	}
 	cout << "Completed reading nodes\n";
 	file.close();
 
-	file.open("T09/Porto/T09_edges_Porto.txt");
+	string edgeFile = "T09/" + cityName + "/T09_edges_" + cityName + ".txt";
+
+	file.open(edgeFile);
 
 	if (!file) {
 		cout << "Failed to open edge file\n";
@@ -59,7 +81,8 @@ void inicia() {
 	while (getline(file, line) && temp != 0) {
 		cout << temp << endl;
 		sscanf(line.c_str(), "(%lf, %lf)", &x, &y);
-		gv->addEdge(id, x, y, EdgeType::UNDIRECTED);
+
+		roads.push_back(new Road(id, findPoint(x), findPoint(y)));
 		temp--;
 		id++;
 	}
@@ -70,8 +93,21 @@ void inicia() {
 
 }
 
+void initMap() {
+	gv = new GraphViewer(1000, 700, false);
+	gv->createWindow(1000, 700);
+	gv->defineVertexColor("blue");
+	gv->defineEdgeColor("black");
+}
+
+void displayMap(){
+
+}
+
 int main() {
-	inicia();
+	initMap();
+	readMap("Porto");
+	displayMap();
 	getchar();
 	return 0;
 }
