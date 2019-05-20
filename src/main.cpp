@@ -18,7 +18,7 @@ void inicia() {
 	gv->addNode(2, 30, 30);
 	gv->addNode(3, 800, 600);
 	ifstream file;
-	file.open("T09/Fafe/T09_nodes_X_Y_Fafe.txt");
+	file.open("T09/Porto/T09_nodes_X_Y_Porto.txt");
 
 	if (!file) {
 		cout << "Failed to open node file\n";
@@ -28,30 +28,37 @@ void inicia() {
 	string line;
 	int temp;
 	double id, x, y;
-	getline(file,line);
-	sscanf(line.c_str(), "%d",&temp);
+	int xOffset= 0, yOffset = 0;
 
-	while (getline(file,line) && temp != 0) {
+	getline(file, line);
+	sscanf(line.c_str(), "%d", &temp); //numNos
+
+
+	while (getline(file, line) && temp != 0) {
 		cout << temp << endl;
-		sscanf(line.c_str(),"(%lf, %lf, %lf)", &id, &x,&y);
-		gv->addNode(id, 25*(x/100-5670), 25*(y/100-45872));
+		sscanf(line.c_str(), "(%lf, %lf, %lf)", &id, &x, &y);
+		if(xOffset == 0 && yOffset == 0){
+			xOffset = x;
+			yOffset = y;
+		}
+		gv->addNode(id, x - xOffset, y - yOffset);
 		temp--;
 	}
 	cout << "Completed reading nodes\n";
 	file.close();
 
-	file.open("T09/Fafe/T09_edges_Fafe.txt");
+	file.open("T09/Porto/T09_edges_Porto.txt");
 
 	if (!file) {
 		cout << "Failed to open edge file\n";
 		exit(1);
 	}
-	getline(file,line);
-	sscanf(line.c_str(), "%d",&temp);
-	id=0;
-	while (getline(file,line) && temp != 0) {
+	getline(file, line);
+	sscanf(line.c_str(), "%d", &temp);
+	id = 0;
+	while (getline(file, line) && temp != 0) {
 		cout << temp << endl;
-		sscanf(line.c_str(),"(%lf, %lf)", &x,&y);
+		sscanf(line.c_str(), "(%lf, %lf)", &x, &y);
 		gv->addEdge(id, x, y, EdgeType::UNDIRECTED);
 		temp--;
 		id++;
