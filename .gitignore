@@ -2,6 +2,6 @@
 .cproject
 .project
 Debug/
-a.out
+proj
 .vscode/
 *.gch
