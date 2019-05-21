@@ -1,5 +1,4 @@
 #include <cstdio>
-#include "graphviewer.h"
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -7,6 +6,8 @@
 #include <vector>
 #include "SupportPoint.h"
 
+#include "graphviewer.h"
+#include "SupportPoint.h"
 #include "Point.h"
 #include "Road.h"
 #include "MutablePriorityQueue.h"
