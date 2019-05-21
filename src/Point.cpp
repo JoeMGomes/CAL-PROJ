@@ -16,6 +16,9 @@ int Point::getID() {
     return this->id;
 }
 
+int Point::getNum(){
+    return num;
+}
 int Point::getX() {
     return this->x;
 }

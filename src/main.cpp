@@ -116,12 +116,12 @@ void initMap() {
 }
 
 void displayMap(nodeEdge_t graph) {
-
     for(auto p : graph.points) {
         gv->addNode(p->getID(), p->getX(), p->getY());
+        if(p->getNum()==1)gv->setVertexColor(p->getID(),RED);//erro duas vezes o mesmo valor
+        if(p->getNum()==1)gv->setVertexColor(p->getID(),GREEN);
         // gv->setVertexLabel(p->getID(), "cenas");
     }
-
     for(auto e : graph.roads) {
         gv->addEdge(e->getID(),e->getSource()->getID(),e->getDest()->getID(), EdgeType::UNDIRECTED);
         //gv->setEdgeLabel(e->getID(),to_string( e->getWeight()));
@@ -201,6 +201,9 @@ nodeEdge_t getPath(/*int sourceID, */int destID) {
     ret.roads = roads;
     return ret;
 }
+
+void PintaSources(nodeEdge_t graph){}
+
 void AdicionaEncomenda() {
     Package pacote;
     Point* Source;
@@ -217,38 +220,38 @@ void AdicionaEncomenda() {
     pacote.setDeliveryPoint(Delivery);
     PackagesToDelivery.push_back(pacote);
 }
+
 void menuControler() {
     cout << endl;
     cout << " _______________________________________________________________________" << endl;
     cout << "|                         Chose one option                              |" << endl;
     cout << "|                                                                       |" << endl;
-    cout << "|      1 - See the map                                                  |" << endl;
-    cout << "|      2 - See pick up points                                           |" << endl;
-    cout << "|      3 - See delivery points                                          |" << endl;
-    cout << "|      4 - See vehicle path to satisfy packages                         |" << endl;
+    cout << "|      1- See the map                                                   |" << endl;
+    cout << "|      2- See vehicle path to satisfy packages                          |" << endl;
+    cout << "|      3- Exit                                                          |" << endl;
+    cout << "|                                                                       |" << endl;
     cout << "|                                                                       |" << endl;
     cout << "|_______________________________________________________________________|" << endl;
 
     int opcao;
     cin >> opcao;
     switch(opcao) {
-    case 1: {
-        displayMap(mainMap);
-        break;
+        case 1: {
+            cout << "The red points represent pickup points and the green ones represent delivery points." << endl;
+            displayMap(mainMap);
+            break;
+        }
+        case 2: {
+            break;
+        }
+        case 3: {
+            break;
+        }
+        default:
+            break;
     }
-    case 2: {
-        break;
-    }
-    case 3: {
-        break;
-    }
-    case 4: {
-        break;
-    }
-
-    }
-
 }
+
 void menuBase() {
     cout << endl;
     cout << " _______________________________________________________________________" << endl;
@@ -264,22 +267,23 @@ void menuBase() {
     cin >> opcao;
 
     switch(opcao) {
-    case 1:{
-        menuUser();
-        break;}
-    case 2:{
-        menuControler();
-        break;
-    }
-    case 3:
-        cout << "The program will end now!" << endl;
-        exit(0);
-    default:
-        cout << "Sorry, not a valid choice. Choose again." << endl;
-        menuBase();
-        break;
+        case 1:{
+            menuUser();
+            break;}
+        case 2:{
+            menuControler();
+            break;
+        }
+        case 3:
+            cout << "The program will end now!" << endl;
+            exit(0);
+        default:
+            cout << "Sorry, not a valid choice. Choose again." << endl;
+            menuBase();
+            break;
     }
 }
+
 void menuUser() {
     cout << endl;
     cout << " _______________________________________________________________________" << endl;
@@ -295,15 +299,14 @@ void menuUser() {
     cin >> opcao;
 
     switch(opcao) {
-    case 1:
-    {
-        AdicionaEncomenda();
-        break;
-    }
-    case 2: {
-        menuBase();
-        break;
-    }
+        case 1:{
+            AdicionaEncomenda();
+            break;
+        }
+        case 2: {
+            menuBase();
+            break;
+        }
     }
 }
 
@@ -313,7 +316,6 @@ int main() {
     //menuBase();
 
     //dijkstra(402328721, 1238420455);
-    std::vector<Road * > r;
     //displayMap(getPath(402328721,1238420455), r);
 
     int opcao=2;

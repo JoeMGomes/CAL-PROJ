@@ -11,6 +11,7 @@ private:
 	int x;
 	int y;
 	double dist;
+	int num; //1 e para source, 2 e para delivery
 	
 	Point * path;
 
@@ -25,6 +26,7 @@ public:
 	int getID();
 	int getX();
 	int getY();
+	int getNum();
 	double getDist();
 	Point * getPath();
 	std::vector<Road*> getRoads();
