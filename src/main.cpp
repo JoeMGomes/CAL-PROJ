@@ -1,13 +1,12 @@
 #include <cstdio>
-#include "graphviewer.h"
 #include <fstream>
 #include <iostream>
 #include <sstream>
 #include <string>
 #include <vector>
-#include <Windows.h>
-#include <SupportPoint.h>
 
+#include "graphviewer.h"
+#include "SupportPoint.h"
 #include "Point.h"
 #include "Road.h"
 #include "MutablePriorityQueue.h"
