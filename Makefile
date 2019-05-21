@@ -1,19 +1,20 @@
-all: src/main.cpp src/connection.cpp src/edgetype.h src/graphviewer.cpp src/MutablePriorityQueue.h src/Road.cpp src/Point.cpp
-	make main connection graphviewer road point
-	g++ -g -o proj main.o connection.o graphviewer.o
-main: src/main.cpp
-	g++ -g -c src/main.cpp
-connection: src/connection.cpp
-	g++ -g -c src/connection.cpp
-graphviewer: src/graphviewer.cpp
-	g++ -g -c src/graphviewer.cpp
-road: src/Road.cpp
-	g++ -g -c src/Road.cpp
-point: src/Point.cpp
-	g++ -g -c src/Point.cpp
-clean: 
-	rm -f proj
-	rm -f *.o
-force:
-	make clean
-	make all
+.PHONY: all clean
+all: proj
+
+CFLAGS = -Wall -Wextra -Werror
+OBJECTS = graphviewer.o connection.o Package.o Point.o Road.o SupportPoint.o Vehicle.o main.o
+
+proj: $(OBJECTS)
+	@g++ $(CFLAGS) -pedantic $(OBJECTS) -o proj
+
+main.o: src/graphviewer.h src/Point.h src/Road.h src/MutablePriorityQueue.h
+graphviewer.o: src/graphviewer.h src/connection.h src/edgetype.h
+connection.o: src/connection.h
+Package.o: src/Point.h
+Point.o: src/Point.h src/Road.h
+Road.o: src/Road.h src/Point.h
+SupportPoint.o: src/SupportPoint.h src/Package.h src/Vehicle.h
+Vehicle.o: src/Vehicle.h
+
+clean:
+	@rm -f proj $(OBJECTS)
