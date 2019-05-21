@@ -23,7 +23,6 @@ Point * findPoint(int id) {
 
     for(auto p : points) {
         if(p->getID() == id) {
-            cout << "got it\n";
             return p;
         }
     }
@@ -75,8 +74,15 @@ void readMap(string cityName) {
     id = 0;
     while (getline(file, line) && temp != 0) {
         sscanf(line.c_str(), "(%lf, %lf)", &x, &y);
+        Point * source = findPoint(x);
+        Point * dest = findPoint(y);
+        Road * r1 = new Road(id,source, dest);   
+        Road * r2 = new Road(id,dest, source);//Se merdar o problema é o id   
 
-        roads.push_back(new Road(id, findPoint(x), findPoint(y)));
+        source->addRoad(r1);
+        dest->addRoad(r2);
+
+        roads.push_back(r1);
         temp--;
         id++;
     }
@@ -98,7 +104,7 @@ void displayMap(vector<Point *> p, vector<Road *> r) {
 
     for(auto p : p) {
         gv->addNode(p->getID(), p->getX(), p->getY());
-       // gv->setVertexLabel(p->getID(), "cenas");
+        // gv->setVertexLabel(p->getID(), "cenas");
     }
 
     for(auto e : r) {
@@ -127,17 +133,22 @@ void dijkstra(int sourceID, int destID) {
     while(!q.empty()) {
 
         source = q.extractMin();
+        cout << "antes\n";
 
         if(source->equals(*dest)) {
             break;
         }
+        cout << "depois\n";
+
+        cout << source->getRoads().at(0)->getID() << endl;
 
         for(auto e : source->getRoads()) {
             oldDistance = e->getDest()->getDist();
-
+            cout << e->getID();
             if(e->getDest()->getDist() > source->getDist() + e->getWeight()) {
                 e->getDest()->setDist(source->getDist() + e->getWeight());
                 e->getDest()->setPath(source);
+                cout << source->getID();
                 if(oldDistance == SIZE_MAX) {
                     q.insert(e->getDest());
                 } else {
@@ -146,7 +157,7 @@ void dijkstra(int sourceID, int destID) {
             }
         }
     }
-            cout << "Found path\n";
+    cout << "Found path\n";
 
 }
 
@@ -158,6 +169,7 @@ std::vector<Point *> getPath(int sourceID, int destID) {
 
     while(source != nullptr) {
         path.push_back(source);
+        cout << source->getID() << endl;
         source = source->getPath();
     }
 
@@ -170,7 +182,7 @@ int main() {
     initMap();
     readMap("Fafe");
 
-    dijkstra(402328721, 1238420455);
+    dijkstra(1238420328, 1238420266);
     std::vector<Road * > r;
     displayMap(getPath(402328721,1238420455), r);
 
