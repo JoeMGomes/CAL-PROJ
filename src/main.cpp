@@ -101,9 +101,9 @@ void initMap() {
     gv->defineEdgeColor("black");
 }
 
-void displayMap(vector<Point *> p, vector<Road *> r) {
+void displayMap(vector<Point *> vecp, vector<Road *> r) {
 
-    for(auto p : p) {
+    for(auto p : vecp) {
         gv->addNode(p->getID(), p->getX(), p->getY());
         // gv->setVertexLabel(p->getID(), "cenas");
     }
@@ -219,7 +219,10 @@ void menuBase(){
 
 		int opcao;
 		cin >> opcao;
-
+        if (cin.fail()){
+            cin.clear();
+            cin.ignore(1000,'\n');
+        }
 		switch(opcao){
 		case 1:
 		{
@@ -232,31 +235,29 @@ void menuBase(){
 		case 3:
 		{
 			cout << "The program will end now!" << endl;
-			break;
+			exit(0);
 		}
 		default: {
-			cout << "Sorry, not a Valid Choice. \n"
-			<< "Choose again.\n";
+			cout << "Sorry, not a valid choice. Choose again." << endl;
 			/*Sleep(3000);
-			system("CLS");
-			menuBase(); */ //eclipse es burro ou eu sou burra
+			system("CLS");*/
+			menuBase();  //eclipse es burro ou eu sou burra//tu es burra
 			break;
 		}
 		}
 }
 int main() {
 	menuBase();
-   // initMap();
-    //readMap("Fafe");
+    initMap();
+    readMap("Fafe");
 
+    displayMap(points,roads);
     dijkstra(1238420328, 1238420266);
-    std::vector<Road * > r;
+    
+    //std::vector<Road * > r;
     //displayMap(getPath(402328721,1238420455), r);
 
-   // displayMap(points,roads);
-
-
-    getchar();
+    getchar();//porque?
     return 0;
 }
 
