@@ -271,12 +271,14 @@ void menuUser() {
             int source=mainMap.points[rand()%mainMap.points.size()]->getID(),dest=mainMap.points[rand()%mainMap.points.size()]->getID();
             cout<<"Origin: "<<source<<endl<<"Destination: "<<dest<<endl;
             dijkstra(source,dest);
-            vector<Road * > r=getPath(source,dest).roads;
-            vector<Point *> p=getPath(source,dest).points;
-            for (long unsigned int i=0;i<p.size();i++){
-                if (i==0||i==p.size()-1)
-                    gv->setVertexColor(mainMap.points[i]->getID(),"yellow");
-                else gv->setVertexColor(mainMap.points[i]->getID(),"green");
+            nodeEdge_t temp=getPath(source,dest);
+            for (long unsigned int i=0;i<temp.points.size();i++){
+                if (i==0||i==temp.points.size()-1)
+                    gv->setVertexColor(temp.points[i]->getID(),"yellow");
+                else gv->setVertexColor(temp.points[i]->getID(),"green");
+            }
+            for (long unsigned int i=0;i<temp.roads.size();i++){
+                gv->setEdgeColor(temp.roads[i]->getID(),"green");
             }
             displayMap(mainMap);
 
