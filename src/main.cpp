@@ -17,13 +17,18 @@
 #endif
 
 //Variaveis globais because fuck it
+
+struct nodeEdge{
+    std::vector<Point *> points;
+    std::vector<Road *> roads;
+} typedef nodeEdge_t;
+
 GraphViewer *gv;
-std::vector<Point*> points;
-std::vector<Road* > roads;
+nodeEdge_t mainMap;
 
 Point * findPoint(int id) {
 
-    for(auto p : points) {
+    for(auto p : mainMap.points) {
         if(p->getID() == id) {
             return p;
         }
@@ -58,7 +63,7 @@ void readMap(string cityName) {
             xOffset = x;
             yOffset = y;
         }
-        points.push_back(new Point(id, x - xOffset, y - yOffset));
+        mainMap.points.push_back(new Point(id, x - xOffset, y - yOffset));
         temp--;
     }
     cout << "Completed reading nodes\n";
@@ -85,7 +90,7 @@ void readMap(string cityName) {
         source->addRoad(r1);
         dest->addRoad(r2);
 
-        roads.push_back(r1);
+        mainMap.roads.push_back(r1);
         temp--;
         id++;
     }
@@ -103,14 +108,14 @@ void initMap() {
     gv->defineEdgeColor("black");
 }
 
-void displayMap(vector<Point *> p, vector<Road *> r) {
+void displayMap(nodeEdge_t graph) {
 
-    for(auto p : p) {
+    for(auto p : graph.points) {
         gv->addNode(p->getID(), p->getX(), p->getY());
         // gv->setVertexLabel(p->getID(), "cenas");
     }
 
-    for(auto e : r) {
+    for(auto e : graph.roads) {
         gv->addEdge(e->getID(),e->getSource()->getID(),e->getDest()->getID(), EdgeType::UNDIRECTED);
         //gv->setEdgeLabel(e->getID(),to_string( e->getWeight()));
     }
@@ -122,7 +127,7 @@ void dijkstra(int sourceID, int destID) {
     Point * dest = findPoint(destID);
     double oldDistance;
 
-    for(auto p : points) {
+    for(auto p : mainMap.points) {
         p->setDist(SIZE_MAX);
         p->setPath(nullptr);
         p->queueIndex = 0;
@@ -136,12 +141,10 @@ void dijkstra(int sourceID, int destID) {
     while(!q.empty()) {
 
         source = q.extractMin();
-        cout << "antes\n";
 
         if(source->equals(*dest)) {
             break;
         }
-        cout << "depois\n";
 
         cout << source->getRoads().at(0)->getID() << endl;
 
@@ -164,7 +167,9 @@ void dijkstra(int sourceID, int destID) {
 
 }
 
-std::vector<Point *> getPath(int sourceID, int destID) {
+nodeEdge_t getPath(int sourceID, int destID) {
+
+    nodeEdge_t ret;
 
     vector<Point *> path;
     Point * dest = findPoint(destID);
@@ -179,7 +184,9 @@ std::vector<Point *> getPath(int sourceID, int destID) {
 
     path.reserve(path.size());
     cout << "Ret path\n";
-    return path;
+    ret.points = path;
+
+    return ret;
 }
 void AdicionaEncomenda() {
 
@@ -257,10 +264,10 @@ int main() {
     int dest = 1238420447;
 
     dijkstra(source, dest);
-    std::vector<Road * > r;
-    displayMap(getPath(source,dest), r);
+    
+   // displayMap(mainMap);
 
-    //displayMap(points,roads);
+    displayMap(getPath(source, dest));
 
     getchar();
     return 0;
