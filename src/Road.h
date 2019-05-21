@@ -19,13 +19,6 @@ public:
 	Point *getDest();
 };
 
-
-
-
-
-
-
-
 #endif
 
 

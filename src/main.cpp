@@ -21,7 +21,7 @@ void menuBase();
 
 //Variaveis globais because fuck it
 
-struct nodeEdge{
+struct nodeEdge {
     std::vector<Point *> points;
     std::vector<Road *> roads;
 } typedef nodeEdge_t;
@@ -195,118 +195,119 @@ nodeEdge_t getPath(int sourceID, int destID) {
 
     return ret;
 }
-void AdicionaEncomenda(){
-	Package pacote;
-	Point* Source;
-	Point* Delivery;
-	int source;
-	int delivery;
-	cout << "ID of the source point?" << endl;
-	cin >> source;
-	cout << "ID of the delivery point?" << endl;
-	cin >> delivery;
-	Source = findPoint(source);
-	Delivery = findPoint(delivery);
-	pacote.setPickUpPoint(Source);
-	pacote.setDeliveryPoint(Delivery);
-	PackagesToDelivery.push_back(pacote);
+void AdicionaEncomenda() {
+    Package pacote;
+    Point* Source;
+    Point* Delivery;
+    int source;
+    int delivery;
+    cout << "ID of the source point?" << endl;
+    cin >> source;
+    cout << "ID of the delivery point?" << endl;
+    cin >> delivery;
+    Source = findPoint(source);
+    Delivery = findPoint(delivery);
+    pacote.setPickUpPoint(Source);
+    pacote.setDeliveryPoint(Delivery);
+    PackagesToDelivery.push_back(pacote);
 }
-void menuControler(){
-				cout << endl;
-				cout << " _______________________________________________________________________" << endl;
-				cout << "|                         Chose one option                              |" << endl;
-				cout << "|                                                                       |" << endl;
-				cout << "|      1 - See the map                                                  |" << endl;
-				cout << "|      2 - See pick up points                                           |" << endl;
-				cout << "|      3 - See delivery points                                          |" << endl;
-				cout << "|      4 - See vehicle path to satisfy packages                         |" << endl;
-				cout << "|                                                                       |" << endl;
-				cout << "|_______________________________________________________________________|" << endl;
+void menuControler() {
+    cout << endl;
+    cout << " _______________________________________________________________________" << endl;
+    cout << "|                         Chose one option                              |" << endl;
+    cout << "|                                                                       |" << endl;
+    cout << "|      1 - See the map                                                  |" << endl;
+    cout << "|      2 - See pick up points                                           |" << endl;
+    cout << "|      3 - See delivery points                                          |" << endl;
+    cout << "|      4 - See vehicle path to satisfy packages                         |" << endl;
+    cout << "|                                                                       |" << endl;
+    cout << "|_______________________________________________________________________|" << endl;
 
-				int opcao;
-				cin >> opcao;
-				switch(opcao){
-				case 1:{
-					  displayMap(points,roads);
-					break;
-				}
-				case 2:{
-					break;
-				}
-				case 3:{
-					break;
-				}
-				case 4:{
-					break;
-				}
+    int opcao;
+    cin >> opcao;
+    switch(opcao) {
+    case 1: {
+        displayMap(mainMap);
+        break;
+    }
+    case 2: {
+        break;
+    }
+    case 3: {
+        break;
+    }
+    case 4: {
+        break;
+    }
 
-				}
+    }
 
 }
-void menuBase(){
-		cout << endl;
-		cout << " _______________________________________________________________________" << endl;
-		cout << "|                         Chose one option                              |" << endl;
-		cout << "|                                                                       |" << endl;
-		cout << "|      1 - I am a user                                                  |" << endl;
-		cout << "|      2 - Control of the company                                       |" << endl;
-		cout << "|      3 - Exit                                                         |" << endl;
-		cout << "|                                                                       |" << endl;
-		cout << "|_______________________________________________________________________|" << endl;
+void menuBase() {
+    cout << endl;
+    cout << " _______________________________________________________________________" << endl;
+    cout << "|                         Chose one option                              |" << endl;
+    cout << "|                                                                       |" << endl;
+    cout << "|      1 - I am a user                                                  |" << endl;
+    cout << "|      2 - Control of the company                                       |" << endl;
+    cout << "|      3 - Exit                                                         |" << endl;
+    cout << "|                                                                       |" << endl;
+    cout << "|_______________________________________________________________________|" << endl;
 
-		int opcao;
-		cin >> opcao;
+    int opcao;
+    cin >> opcao;
 
-		switch(opcao){
-		case 1:
-		{
-			menuUser();
-			break;
-		case 2:
-		{
-			menuControler();
-			break;
-		}
-		case 3:
-			cout << "The program will end now!" << endl;
-			exit(0);
-		default:
-			cout << "Sorry, not a valid choice. Choose again." << endl;
-			menuBase();
-			break;
-	}
+    switch(opcao) {
+    case 1:
+    {
+        menuUser();
+        break;
+        case 2:
+        {
+            menuControler();
+            break;
+        }
+        case 3:
+            cout << "The program will end now!" << endl;
+            exit(0);
+        default:
+            cout << "Sorry, not a valid choice. Choose again." << endl;
+            menuBase();
+            break;
+        }
+    }
 }
-void menuUser(){
-			cout << endl;
-			cout << " _______________________________________________________________________" << endl;
-			cout << "|                         Chose one option                              |" << endl;
-			cout << "|                                                                       |" << endl;
-			cout << "|      1 - Ask for a delivery                                           |" << endl;
-			cout << "|      2 - Exit                                                         |" << endl;
-			cout << "|                                                                       |" << endl;
-			cout << "|                                                                       |" << endl;
-			cout << "|_______________________________________________________________________|" << endl;
+void menuUser() {
+    cout << endl;
+    cout << " _______________________________________________________________________" << endl;
+    cout << "|                         Chose one option                              |" << endl;
+    cout << "|                                                                       |" << endl;
+    cout << "|      1 - Ask for a delivery                                           |" << endl;
+    cout << "|      2 - Exit                                                         |" << endl;
+    cout << "|                                                                       |" << endl;
+    cout << "|                                                                       |" << endl;
+    cout << "|_______________________________________________________________________|" << endl;
 
-	int opcao;
-	cin >> opcao;
+    int opcao;
+    cin >> opcao;
 
-	switch(opcao){
-	case 1:
-	{
-		AdicionaEncomenda();
-		break;
-	}
-	case 2:{
-		menuBase();
-		break;
-	}
-	}
+    switch(opcao) {
+    case 1:
+    {
+        AdicionaEncomenda();
+        break;
+    }
+    case 2: {
+        menuBase();
+        break;
+    }
+    }
 }
 
 int main() {
-	initMap();
-	readMap("Fafe");
-	menuBase();
+    initMap();
+    readMap("Fafe");
+    menuBase();
 
     //dijkstra(402328721, 1238420455);
     std::vector<Road * > r;
@@ -314,60 +315,59 @@ int main() {
 
     int opcao;
     cin >> opcao;
-    if (cin.fail()){
+    if (cin.fail()) {
         cin.clear();
-        cin.ignore(1000,'\n');}
+        cin.ignore(1000,'\n');
+    }
     switch(opcao) {
-        case 1:{
-            int source,dest;
-            while (true){
-                cout<<"Source:";cin>>source;
-                if (cin.fail()){
-                    cin.clear();
-                    cin.ignore(1000,'\n');
-                    continue;}
-                cout<<"Destination:";cin>>dest;
-                if (cin.fail()){
-                    cin.clear();
-                    cin.ignore(1000,'\n');
-                    continue;}
-                break;}
-            initMap();
-            readMap("Fafe");
-            dijkstra(source,dest);
-            vector<Road * > r;
-            displayMap(mainMap);
-            break;}
-        case 2:{
-            initMap();
-            readMap("Fafe");
-            srand(time(NULL));
-            int source=mainMap.points[rand()%mainMap.points.size()]->getID(),dest=mainMap.points[rand()%mainMap.points.size()]->getID();
-            cout<<"Origin: "<<source<<endl<<"Destination: "<<dest<<endl;
-            dijkstra(source,dest);
-            nodeEdge_t temp=getPath(source,dest);
-            for (long unsigned int i=0;i<temp.points.size();i++){
-                if (i==0||i==temp.points.size()-1)
-                    gv->setVertexColor(temp.points[i]->getID(),"yellow");
-                else gv->setVertexColor(temp.points[i]->getID(),"green");
+    case 1: {
+        int source,dest;
+        while (true) {
+            cout<<"Source:";
+            cin>>source;
+            if (cin.fail()) {
+                cin.clear();
+                cin.ignore(1000,'\n');
+                continue;
             }
-            for (long unsigned int i=0;i<temp.roads.size();i++){
-                gv->setEdgeColor(temp.roads[i]->getID(),"green");
+            cout<<"Destination:";
+            cin>>dest;
+            if (cin.fail()) {
+                cin.clear();
+                cin.ignore(1000,'\n');
+                continue;
             }
-            displayMap(mainMap);
-
-            break;}
-        case 3: 
-            menuBase();
             break;
+        }
+        initMap();
+        readMap("Fafe");
+        dijkstra(source,dest);
+        vector<Road * > r;
+        displayMap(mainMap);
+        break;
+    }
+    case 2: {
+        initMap();
+        readMap("Fafe");
+        srand(time(NULL));
+        int source=mainMap.points[rand()%mainMap.points.size()]->getID(),dest=mainMap.points[rand()%mainMap.points.size()]->getID();
+        cout<<"Origin: "<<source<<endl<<"Destination: "<<dest<<endl;
+        dijkstra(source,dest);
+        nodeEdge_t temp=getPath(source,dest);
+        for (long unsigned int i=0; i<temp.points.size(); i++) {
+            if (i==0||i==temp.points.size()-1)
+                gv->setVertexColor(temp.points[i]->getID(),"yellow");
+            else gv->setVertexColor(temp.points[i]->getID(),"green");
+        }
+        for (long unsigned int i=0; i<temp.roads.size(); i++) {
+            gv->setEdgeColor(temp.roads[i]->getID(),"green");
+        }
+        displayMap(mainMap);
+
+        break;
+    }
+    case 3:
+        menuBase();
+        break;
     }
 }
-
-int main() {
-	menuBase();
-
-    getchar();//porque?
-    return 0;
-}
-
-
