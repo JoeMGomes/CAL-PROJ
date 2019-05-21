@@ -15,6 +15,8 @@
 #else
 #include <Windows.h>
 #endif
+void menuUser();
+void menuBase();
 
 //Variaveis globais because fuck it
 GraphViewer *gv;
@@ -182,32 +184,8 @@ std::vector<Point *> getPath(int sourceID, int destID) {
     return path;
 }
 void AdicionaEncomenda() {
-
 }
-void menuUser() {
-    cout << endl;
-    cout << " _______________________________________________________________________" << endl;
-    cout << "|                         Chose one option                              |" << endl;
-    cout << "|                                                                       |" << endl;
-    cout << "|      1 - Ask for a delivery                                           |" << endl;
-    cout << "|      2 - Exit                                                         |" << endl;
-    cout << "|                                                                       |" << endl;
-    cout << "|                                                                       |" << endl;
-    cout << "|_______________________________________________________________________|" << endl;
 
-    int opcao;
-    cin >> opcao;
-
-    switch(opcao) {
-    case 1:
-    {
-        break;
-    }
-    case 2: {
-        break;
-    }
-    }
-}
 void menuBase(){
 	SupportPoint pontoApoio;
 	cout << endl;
@@ -237,23 +215,74 @@ void menuBase(){
 			exit(0);
 		default:
 			cout << "Sorry, not a valid choice. Choose again." << endl;
-			/*Sleep(3000);
-			system("CLS");*/
-			menuBase();  //eclipse es burro ou eu sou burra//tu es burra
+			menuBase();
 			break;
 	}
 }
 
+void menuUser() {
+    cout << endl;
+    cout << " _______________________________________________________________________" << endl;
+    cout << "|                         Chose one option                              |" << endl;
+    cout << "|                                                                       |" << endl;
+    cout << "|      1 - Ask for a delivery                                           |" << endl;
+    cout << "|      2 - Random delivery                                              |" << endl;
+    cout << "|      3 - Exit                                                         |" << endl;
+    cout << "|                                                                       |" << endl;
+    cout << "|_______________________________________________________________________|" << endl;
+
+    int opcao;
+    cin >> opcao;
+    if (cin.fail()){
+        cin.clear();
+        cin.ignore(1000,'\n');}
+    switch(opcao) {
+        case 1:{
+            int source,dest;
+            while (true){
+                cout<<"Source:";cin>>source;
+                if (cin.fail()){
+                    cin.clear();
+                    cin.ignore(1000,'\n');
+                    continue;}
+                cout<<"Destination:";cin>>dest;
+                if (cin.fail()){
+                    cin.clear();
+                    cin.ignore(1000,'\n');
+                    continue;}
+                break;}
+            initMap();
+            readMap("Fafe");
+            dijkstra(source,dest);
+            vector<Road * > r;
+            displayMap(getPath(source,dest), r);
+            break;}
+        case 2:{
+            initMap();
+            readMap("Fafe");
+            srand(time(NULL));
+            int source=points[rand()%points.size()]->getID(),dest=points[rand()%points.size()]->getID();
+            cout<<"Origin: "<<source<<endl<<"Destination: "<<dest<<endl;
+            dijkstra(source,dest);
+            vector<Road * > r;
+            vector<Point *> p;
+            p=getPath(source,dest);
+            for (long unsigned int i=0;i<p.size();i++){
+                if (i==0||i==p.size()-1)
+                    gv->setVertexColor(points[i]->getID(),"yellow");
+                else gv->setVertexColor(points[i]->getID(),"green");
+            }
+            displayMap(points,roads);
+
+            break;}
+        case 3: 
+            menuBase();
+            break;
+    }
+}
+
 int main() {
 	menuBase();
-    initMap();
-    readMap("Fafe");
-
-    displayMap(points,roads);
-    dijkstra(1238420328, 1238420266);
-    
-    //std::vector<Road * > r;
-    //displayMap(getPath(402328721,1238420455), r);
 
     getchar();//porque?
     return 0;
