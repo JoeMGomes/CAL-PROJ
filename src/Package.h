@@ -7,12 +7,13 @@ class Package {
 private:
 	int identifier; //is this the best option?
 	Point *PickUpPoint; //??
-	Point * DeliveryPoint;
+	Point *DeliveryPoint;
 public:
-	Package(int id, Point PUP, Point DP);
-	int getIdentifier(){
-		return this->identifier;
-	}
+	Package();
+	Package(int id, Point* PUP, Point* DP);
+	void setPickUpPoint(Point* PUP);
+	void setDeliveryPoint(Point* DP);
+	int getIdentifier();
 };
 
 

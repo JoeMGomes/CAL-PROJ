@@ -5,8 +5,8 @@
 #include <sstream>
 #include <string>
 #include <vector>
-#include <Windows.h>
-#include <SupportPoint.h>
+#include "SupportPoint.h"
+#include "Package.h"
 
 #include "Point.h"
 #include "Road.h"
@@ -20,6 +20,10 @@
 GraphViewer *gv;
 std::vector<Point*> points;
 std::vector<Road* > roads;
+vector<Package> PackagesToDelivery;
+vector<Vehicle> Fleet;
+
+void menuUser();
 
 Point * findPoint(int id) {
 
@@ -101,6 +105,8 @@ void displayMap(vector<Point *> p, vector<Road *> r) {
     for(auto p : p) {
         gv->addNode(p->getID(), p->getX(), p->getY());
        // gv->setVertexLabel(p->getID(), "cenas");
+
+        gv->setVertexColor(p->getID(),RED);
     }
 
     for(auto e : r) {
@@ -168,35 +174,55 @@ std::vector<Point *> getPath(int sourceID, int destID) {
     return path;
 }
 void AdicionaEncomenda(){
-
+	Package pacote;
+	Point* Source;
+	Point* Delivery;
+	int source;
+	int delivery;
+	cout << "ID of the source point?" << endl;
+	cin >> source;
+	cout << "ID of the delivery point?" << endl;
+	cin >> delivery;
+	Source = findPoint(source);
+	Delivery = findPoint(delivery);
+	pacote.setPickUpPoint(Source);
+	pacote.setDeliveryPoint(Delivery);
+	PackagesToDelivery.push_back(pacote);
 }
-void menuUser(){
-	cout << endl;
-			cout << " _______________________________________________________________________" << endl;
-			cout << "|                         Chose one option                              |" << endl;
-			cout << "|                                                                       |" << endl;
-			cout << "|      1 - Ask for a delivery                                           |" << endl;
-			cout << "|      2 - Exit                                                         |" << endl;
-			cout << "|                                                                       |" << endl;
-			cout << "|                                                                       |" << endl;
-			cout << "|_______________________________________________________________________|" << endl;
+void menuControler(){
+				cout << endl;
+				cout << " _______________________________________________________________________" << endl;
+				cout << "|                         Chose one option                              |" << endl;
+				cout << "|                                                                       |" << endl;
+				cout << "|      1 - See the map                                                  |" << endl;
+				cout << "|      2 - See pick up points                                           |" << endl;
+				cout << "|      3 - See delivery points                                          |" << endl;
+				cout << "|      4 - See vehicle path to satisfy packages                         |" << endl;
+				cout << "|                                                                       |" << endl;
+				cout << "|_______________________________________________________________________|" << endl;
 
-	int opcao;
-	cin >> opcao;
+				int opcao;
+				cin >> opcao;
+				switch(opcao){
+				case 1:{
+					  displayMap(points,roads);
+					break;
+				}
+				case 2:{
+					break;
+				}
+				case 3:{
+					break;
+				}
+				case 4:{
+					break;
+				}
 
-	switch(opcao){
-	case 1:
-	{
-		break;
-	}
-	case 2:{
-		break;
-	}
-	}
+				}
+
 }
 void menuBase(){
-	SupportPoint pontoApoio;
-	cout << endl;
+		cout << endl;
 		cout << " _______________________________________________________________________" << endl;
 		cout << "|                         Chose one option                              |" << endl;
 		cout << "|                                                                       |" << endl;
@@ -217,7 +243,9 @@ void menuBase(){
 		}
 		case 2:
 		{
-			break;		}
+			menuControler();
+			break;
+		}
 		case 3:
 		{
 			cout << "The program will end now!" << endl;
@@ -233,10 +261,38 @@ void menuBase(){
 		}
 		}
 }
+void menuUser(){
+			cout << endl;
+			cout << " _______________________________________________________________________" << endl;
+			cout << "|                         Chose one option                              |" << endl;
+			cout << "|                                                                       |" << endl;
+			cout << "|      1 - Ask for a delivery                                           |" << endl;
+			cout << "|      2 - Exit                                                         |" << endl;
+			cout << "|                                                                       |" << endl;
+			cout << "|                                                                       |" << endl;
+			cout << "|_______________________________________________________________________|" << endl;
+
+	int opcao;
+	cin >> opcao;
+
+	switch(opcao){
+	case 1:
+	{
+		AdicionaEncomenda();
+		break;
+	}
+	case 2:{
+		menuBase();
+		break;
+	}
+	}
+}
+
 int main() {
+	initMap();
+	readMap("Fafe");
 	menuBase();
-   // initMap();
-    //readMap("Fafe");
+
 
     //dijkstra(402328721, 1238420455);
     std::vector<Road * > r;
