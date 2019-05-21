@@ -262,24 +262,23 @@ void menuUser() {
             readMap("Fafe");
             dijkstra(source,dest);
             vector<Road * > r;
-            displayMap(getPath(source,dest), r);
+            displayMap(mainMap);
             break;}
         case 2:{
             initMap();
             readMap("Fafe");
             srand(time(NULL));
-            int source=points[rand()%points.size()]->getID(),dest=points[rand()%points.size()]->getID();
+            int source=mainMap.points[rand()%mainMap.points.size()]->getID(),dest=mainMap.points[rand()%mainMap.points.size()]->getID();
             cout<<"Origin: "<<source<<endl<<"Destination: "<<dest<<endl;
             dijkstra(source,dest);
-            vector<Road * > r;
-            vector<Point *> p;
-            p=getPath(source,dest);
+            vector<Road * > r=getPath(source,dest).roads;
+            vector<Point *> p=getPath(source,dest).points;
             for (long unsigned int i=0;i<p.size();i++){
                 if (i==0||i==p.size()-1)
-                    gv->setVertexColor(points[i]->getID(),"yellow");
-                else gv->setVertexColor(points[i]->getID(),"green");
+                    gv->setVertexColor(mainMap.points[i]->getID(),"yellow");
+                else gv->setVertexColor(mainMap.points[i]->getID(),"green");
             }
-            displayMap(points,roads);
+            displayMap(mainMap);
 
             break;}
         case 3: 
