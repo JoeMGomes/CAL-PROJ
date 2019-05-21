@@ -211,44 +211,39 @@ void menuUser() {
 void menuBase(){
 	SupportPoint pontoApoio;
 	cout << endl;
-		cout << " _______________________________________________________________________" << endl;
-		cout << "|                         Chose one option                              |" << endl;
-		cout << "|                                                                       |" << endl;
-		cout << "|      1 - I am a user                                                  |" << endl;
-		cout << "|      2 - Control of the company                                       |" << endl;
-		cout << "|      3 - Exit                                                         |" << endl;
-		cout << "|                                                                       |" << endl;
-		cout << "|_______________________________________________________________________|" << endl;
+	cout << " _______________________________________________________________________" << endl;
+	cout << "|                         Chose one option                              |" << endl;
+	cout << "|                                                                       |" << endl;
+	cout << "|      1 - I am a user                                                  |" << endl;
+	cout << "|      2 - Control of the company                                       |" << endl;
+	cout << "|      3 - Exit                                                         |" << endl;
+	cout << "|                                                                       |" << endl;
+	cout << "|_______________________________________________________________________|" << endl;
 
-		int opcao;
-		cin >> opcao;
-        if (cin.fail()){
-            cin.clear();
-            cin.ignore(1000,'\n');
-        }
-		switch(opcao){
-		case 1:
-		{
+	int opcao;
+	cin >> opcao;
+    if (cin.fail()){
+        cin.clear();
+        cin.ignore(1000,'\n');
+    }
+	switch(opcao){
+	    case 1:
 			menuUser();
 			break;
-		}
 		case 2:
-		{
-			break;		}
+			break;
 		case 3:
-		{
 			cout << "The program will end now!" << endl;
 			exit(0);
-		}
-		default: {
+		default:
 			cout << "Sorry, not a valid choice. Choose again." << endl;
 			/*Sleep(3000);
 			system("CLS");*/
 			menuBase();  //eclipse es burro ou eu sou burra//tu es burra
 			break;
-		}
-		}
+	}
 }
+
 int main() {
 	menuBase();
     initMap();
