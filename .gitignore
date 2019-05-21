@@ -6,3 +6,4 @@ proj
 .vscode/
 *.gch
 *.o
+*.orig
