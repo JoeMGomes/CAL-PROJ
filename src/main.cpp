@@ -5,8 +5,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
-#include <Windows.h>
-#include <SupportPoint.h>
+#include "SupportPoint.h"
 
 #include "Point.h"
 #include "Road.h"
@@ -28,6 +27,7 @@ Point * findPoint(int id) {
             return p;
         }
     }
+    cout << "Point not found\n";
     return nullptr;
 }
 
@@ -78,8 +78,8 @@ void readMap(string cityName) {
         sscanf(line.c_str(), "(%lf, %lf)", &x, &y);
         Point * source = findPoint(x);
         Point * dest = findPoint(y);
-        Road * r1 = new Road(id,source, dest);   
-        Road * r2 = new Road(id,dest, source);//Se merdar o problema é o id   
+        Road * r1 = new Road(id,source, dest);
+        Road * r2 = new Road(id,dest, source);//Se merdar o problema é o id
 
         source->addRoad(r1);
         dest->addRoad(r2);
@@ -169,6 +169,7 @@ std::vector<Point *> getPath(int sourceID, int destID) {
     Point * dest = findPoint(destID);
     Point * source = dest->getPath();
 
+    path.push_back(dest);
     while(source != nullptr) {
         path.push_back(source);
         cout << source->getID() << endl;
@@ -179,83 +180,86 @@ std::vector<Point *> getPath(int sourceID, int destID) {
     cout << "Ret path\n";
     return path;
 }
-void AdicionaEncomenda(){
+void AdicionaEncomenda() {
 
 }
-void menuUser(){
-	cout << endl;
-			cout << " _______________________________________________________________________" << endl;
-			cout << "|                         Chose one option                              |" << endl;
-			cout << "|                                                                       |" << endl;
-			cout << "|      1 - Ask for a delivery                                           |" << endl;
-			cout << "|      2 - Exit                                                         |" << endl;
-			cout << "|                                                                       |" << endl;
-			cout << "|                                                                       |" << endl;
-			cout << "|_______________________________________________________________________|" << endl;
+void menuUser() {
+    cout << endl;
+    cout << " _______________________________________________________________________" << endl;
+    cout << "|                         Chose one option                              |" << endl;
+    cout << "|                                                                       |" << endl;
+    cout << "|      1 - Ask for a delivery                                           |" << endl;
+    cout << "|      2 - Exit                                                         |" << endl;
+    cout << "|                                                                       |" << endl;
+    cout << "|                                                                       |" << endl;
+    cout << "|_______________________________________________________________________|" << endl;
 
-	int opcao;
-	cin >> opcao;
+    int opcao;
+    cin >> opcao;
 
-	switch(opcao){
-	case 1:
-	{
-		break;
-	}
-	case 2:{
-		break;
-	}
-	}
+    switch(opcao) {
+    case 1:
+    {
+        break;
+    }
+    case 2: {
+        break;
+    }
+    }
 }
-void menuBase(){
-	SupportPoint pontoApoio;
-	cout << endl;
-		cout << " _______________________________________________________________________" << endl;
-		cout << "|                         Chose one option                              |" << endl;
-		cout << "|                                                                       |" << endl;
-		cout << "|      1 - I am a user                                                  |" << endl;
-		cout << "|      2 - Control of the company                                       |" << endl;
-		cout << "|      3 - Exit                                                         |" << endl;
-		cout << "|                                                                       |" << endl;
-		cout << "|_______________________________________________________________________|" << endl;
+void menuBase() {
+    SupportPoint pontoApoio;
+    cout << endl;
+    cout << " _______________________________________________________________________" << endl;
+    cout << "|                         Chose one option                              |" << endl;
+    cout << "|                                                                       |" << endl;
+    cout << "|      1 - I am a user                                                  |" << endl;
+    cout << "|      2 - Control of the company                                       |" << endl;
+    cout << "|      3 - Exit                                                         |" << endl;
+    cout << "|                                                                       |" << endl;
+    cout << "|_______________________________________________________________________|" << endl;
 
-		int opcao;
-		cin >> opcao;
+    int opcao;
+    cin >> opcao;
 
-		switch(opcao){
-		case 1:
-		{
-			menuUser();
-			break;
-		}
-		case 2:
-		{
-			break;		}
-		case 3:
-		{
-			cout << "The program will end now!" << endl;
-			break;
-		}
-		default: {
-			cout << "Sorry, not a Valid Choice. \n"
-			<< "Choose again.\n";
-			/*Sleep(3000);
-			system("CLS");
-			menuBase(); */ //eclipse es burro ou eu sou burra
-			break;
-		}
-		}
+    switch(opcao) {
+    case 1:
+    {
+        menuUser();
+        break;
+    }
+    case 2:
+    {
+        break;
+    }
+    case 3:
+    {
+        cout << "The program will end now!" << endl;
+        break;
+    }
+    default: {
+        cout << "Sorry, not a Valid Choice. \n"
+             << "Choose again.\n";
+        /*Sleep(3000);
+        system("CLS");
+        menuBase(); */ //eclipse es burro ou eu sou burra
+        break;
+    }
+    }
 }
 int main() {
-	menuBase();
-   // initMap();
-    //readMap("Fafe");
+    //menuBase();
+    initMap();
+    readMap("Fafe");
 
-    dijkstra(1238420328, 1238420266);
+    int source =1055447134;
+    int dest = 1238420447;
+
+    dijkstra(source, dest);
     std::vector<Road * > r;
-    //displayMap(getPath(402328721,1238420455), r);
+    displayMap(getPath(source,dest), r);
 
-   // displayMap(points,roads);
-
+    //displayMap(points,roads);
 
     getchar();
     return 0;

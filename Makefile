@@ -1,7 +1,7 @@
 CC= g++
 LIBS = 
 OBJ = src/graphviewer.o src/connection.o src/Package.o src/Point.o src/Road.o src/SupportPoint.o src/Vehicle.o src/main.o
-CFLAGS = -g -Wall -Wextra -Werror #-MMD
+CFLAGS = -g -Wall -Wextra  #-MMD
 all: proj 
 
 %.o: %.cpp
