@@ -1,5 +1,4 @@
 #include <cstdio>
-#include "graphviewer.h"
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -8,6 +7,8 @@
 #include "SupportPoint.h"
 #include "Package.h"
 
+#include "graphviewer.h"
+#include "SupportPoint.h"
 #include "Point.h"
 #include "Road.h"
 #include "MutablePriorityQueue.h"
@@ -15,24 +16,31 @@
 #else
 #include <Windows.h>
 #endif
+void menuUser();
+void menuBase();
 
 //Variaveis globais because fuck it
+
+struct nodeEdge{
+    std::vector<Point *> points;
+    std::vector<Road *> roads;
+} typedef nodeEdge_t;
+
 GraphViewer *gv;
-std::vector<Point*> points;
-std::vector<Road* > roads;
-vector<Package> PackagesToDelivery;
+nodeEdge_t mainMap;
 vector<Vehicle> Fleet;
+vector<Package> PackagesToDelivery;
 
 void menuUser();
 
 Point * findPoint(int id) {
 
-    for(auto p : points) {
+    for(auto p : mainMap.points) {
         if(p->getID() == id) {
-            cout << "got it\n";
             return p;
         }
     }
+    cout << "Point not found\n";
     return nullptr;
 }
 
@@ -62,7 +70,7 @@ void readMap(string cityName) {
             xOffset = x;
             yOffset = y;
         }
-        points.push_back(new Point(id, x - xOffset, y - yOffset));
+        mainMap.points.push_back(new Point(id, x - xOffset, y - yOffset));
         temp--;
     }
     cout << "Completed reading nodes\n";
@@ -81,8 +89,15 @@ void readMap(string cityName) {
     id = 0;
     while (getline(file, line) && temp != 0) {
         sscanf(line.c_str(), "(%lf, %lf)", &x, &y);
+        Point * source = findPoint(x);
+        Point * dest = findPoint(y);
+        Road * r1 = new Road(id,source, dest);
+        Road * r2 = new Road(id,dest, source);//Se merdar o problema é o id
 
-        roads.push_back(new Road(id, findPoint(x), findPoint(y)));
+        source->addRoad(r1);
+        dest->addRoad(r2);
+
+        mainMap.roads.push_back(r1);
         temp--;
         id++;
     }
@@ -100,16 +115,14 @@ void initMap() {
     gv->defineEdgeColor("black");
 }
 
-void displayMap(vector<Point *> p, vector<Road *> r) {
+void displayMap(nodeEdge_t graph) {
 
-    for(auto p : p) {
+    for(auto p : graph.points) {
         gv->addNode(p->getID(), p->getX(), p->getY());
-       // gv->setVertexLabel(p->getID(), "cenas");
-
-        gv->setVertexColor(p->getID(),RED);
+        // gv->setVertexLabel(p->getID(), "cenas");
     }
 
-    for(auto e : r) {
+    for(auto e : graph.roads) {
         gv->addEdge(e->getID(),e->getSource()->getID(),e->getDest()->getID(), EdgeType::UNDIRECTED);
         //gv->setEdgeLabel(e->getID(),to_string( e->getWeight()));
     }
@@ -121,7 +134,7 @@ void dijkstra(int sourceID, int destID) {
     Point * dest = findPoint(destID);
     double oldDistance;
 
-    for(auto p : points) {
+    for(auto p : mainMap.points) {
         p->setDist(SIZE_MAX);
         p->setPath(nullptr);
         p->queueIndex = 0;
@@ -140,12 +153,15 @@ void dijkstra(int sourceID, int destID) {
             break;
         }
 
+        cout << source->getRoads().at(0)->getID() << endl;
+
         for(auto e : source->getRoads()) {
             oldDistance = e->getDest()->getDist();
-
+            cout << e->getID();
             if(e->getDest()->getDist() > source->getDist() + e->getWeight()) {
                 e->getDest()->setDist(source->getDist() + e->getWeight());
                 e->getDest()->setPath(source);
+                cout << source->getID();
                 if(oldDistance == SIZE_MAX) {
                     q.insert(e->getDest());
                 } else {
@@ -154,24 +170,30 @@ void dijkstra(int sourceID, int destID) {
             }
         }
     }
-            cout << "Found path\n";
+    cout << "Found path\n";
 
 }
 
-std::vector<Point *> getPath(int sourceID, int destID) {
+nodeEdge_t getPath(int sourceID, int destID) {
+
+    nodeEdge_t ret;
 
     vector<Point *> path;
     Point * dest = findPoint(destID);
     Point * source = dest->getPath();
 
+    path.push_back(dest);
     while(source != nullptr) {
         path.push_back(source);
+        cout << source->getID() << endl;
         source = source->getPath();
     }
 
     path.reserve(path.size());
     cout << "Ret path\n";
-    return path;
+    ret.points = path;
+
+    return ret;
 }
 void AdicionaEncomenda(){
 	Package pacote;
@@ -240,26 +262,19 @@ void menuBase(){
 		{
 			menuUser();
 			break;
-		}
 		case 2:
 		{
 			menuControler();
 			break;
 		}
 		case 3:
-		{
 			cout << "The program will end now!" << endl;
+			exit(0);
+		default:
+			cout << "Sorry, not a valid choice. Choose again." << endl;
+			menuBase();
 			break;
-		}
-		default: {
-			cout << "Sorry, not a Valid Choice. \n"
-			<< "Choose again.\n";
-			/*Sleep(3000);
-			system("CLS");
-			menuBase(); */ //eclipse es burro ou eu sou burra
-			break;
-		}
-		}
+	}
 }
 void menuUser(){
 			cout << endl;
@@ -293,15 +308,65 @@ int main() {
 	readMap("Fafe");
 	menuBase();
 
-
     //dijkstra(402328721, 1238420455);
     std::vector<Road * > r;
     //displayMap(getPath(402328721,1238420455), r);
 
-   // displayMap(points,roads);
+    int opcao;
+    cin >> opcao;
+    if (cin.fail()){
+        cin.clear();
+        cin.ignore(1000,'\n');}
+    switch(opcao) {
+        case 1:{
+            int source,dest;
+            while (true){
+                cout<<"Source:";cin>>source;
+                if (cin.fail()){
+                    cin.clear();
+                    cin.ignore(1000,'\n');
+                    continue;}
+                cout<<"Destination:";cin>>dest;
+                if (cin.fail()){
+                    cin.clear();
+                    cin.ignore(1000,'\n');
+                    continue;}
+                break;}
+            initMap();
+            readMap("Fafe");
+            dijkstra(source,dest);
+            vector<Road * > r;
+            displayMap(mainMap);
+            break;}
+        case 2:{
+            initMap();
+            readMap("Fafe");
+            srand(time(NULL));
+            int source=mainMap.points[rand()%mainMap.points.size()]->getID(),dest=mainMap.points[rand()%mainMap.points.size()]->getID();
+            cout<<"Origin: "<<source<<endl<<"Destination: "<<dest<<endl;
+            dijkstra(source,dest);
+            nodeEdge_t temp=getPath(source,dest);
+            for (long unsigned int i=0;i<temp.points.size();i++){
+                if (i==0||i==temp.points.size()-1)
+                    gv->setVertexColor(temp.points[i]->getID(),"yellow");
+                else gv->setVertexColor(temp.points[i]->getID(),"green");
+            }
+            for (long unsigned int i=0;i<temp.roads.size();i++){
+                gv->setEdgeColor(temp.roads[i]->getID(),"green");
+            }
+            displayMap(mainMap);
 
+            break;}
+        case 3: 
+            menuBase();
+            break;
+    }
+}
 
-    getchar();
+int main() {
+	menuBase();
+
+    getchar();//porque?
     return 0;
 }
 

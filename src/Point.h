@@ -13,6 +13,7 @@ private:
 	double dist;
 	
 	Point * path;
+
 	std::vector<Road* > roads;
 public:
 
@@ -30,6 +31,7 @@ public:
 
 	void setDist(double dist);
 	void setPath(Point * path);
+	void addRoad(Road * r);
 
 	bool operator<(Point & p) const;
 

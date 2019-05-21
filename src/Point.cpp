@@ -50,3 +50,7 @@ bool Point::operator<(Point & p)const {
 bool Point::equals(Point & p)const{
 	return this->id == p.getID();
 }
+
+void Point::addRoad(Road * r){
+    this->roads.push_back(r);
+}

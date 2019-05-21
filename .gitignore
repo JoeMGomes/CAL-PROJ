@@ -7,3 +7,4 @@ proj
 *.gch
 *.o
 *.orig
+*.d
