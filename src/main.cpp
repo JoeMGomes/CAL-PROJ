@@ -174,25 +174,31 @@ void dijkstra(int sourceID, int destID) {
 
 }
 
-nodeEdge_t getPath(int sourceID, int destID) {
+nodeEdge_t getPath(/*int sourceID, */int destID) {
 
     nodeEdge_t ret;
 
     vector<Point *> path;
+    vector<Road *> roads, temp;
     Point * dest = findPoint(destID);
     Point * source = dest->getPath();
 
     path.push_back(dest);
     while(source != nullptr) {
+        temp=dest->getRoads();
         path.push_back(source);
+        for (unsigned int i=0;i<temp.size();i++)
+            if (temp[i]->getDest()==source)
+                roads.push_back(temp[i]);
         cout << source->getID() << endl;
+        dest = source;
         source = source->getPath();
     }
 
     path.reserve(path.size());
     cout << "Ret path\n";
     ret.points = path;
-
+    ret.roads = roads;
     return ret;
 }
 void AdicionaEncomenda() {
@@ -258,23 +264,20 @@ void menuBase() {
     cin >> opcao;
 
     switch(opcao) {
-    case 1:
-    {
+    case 1:{
         menuUser();
+        break;}
+    case 2:{
+        menuControler();
         break;
-        case 2:
-        {
-            menuControler();
-            break;
-        }
-        case 3:
-            cout << "The program will end now!" << endl;
-            exit(0);
-        default:
-            cout << "Sorry, not a valid choice. Choose again." << endl;
-            menuBase();
-            break;
-        }
+    }
+    case 3:
+        cout << "The program will end now!" << endl;
+        exit(0);
+    default:
+        cout << "Sorry, not a valid choice. Choose again." << endl;
+        menuBase();
+        break;
     }
 }
 void menuUser() {
@@ -305,16 +308,16 @@ void menuUser() {
 }
 
 int main() {
-    initMap();
-    readMap("Fafe");
-    menuBase();
+    //initMap();
+    //readMap("Fafe");
+    //menuBase();
 
     //dijkstra(402328721, 1238420455);
     std::vector<Road * > r;
     //displayMap(getPath(402328721,1238420455), r);
 
-    int opcao;
-    cin >> opcao;
+    int opcao=2;
+    //cin >> opcao;
     if (cin.fail()) {
         cin.clear();
         cin.ignore(1000,'\n');
@@ -353,7 +356,7 @@ int main() {
         int source=mainMap.points[rand()%mainMap.points.size()]->getID(),dest=mainMap.points[rand()%mainMap.points.size()]->getID();
         cout<<"Origin: "<<source<<endl<<"Destination: "<<dest<<endl;
         dijkstra(source,dest);
-        nodeEdge_t temp=getPath(source,dest);
+        nodeEdge_t temp=getPath(dest);
         for (long unsigned int i=0; i<temp.points.size(); i++) {
             if (i==0||i==temp.points.size()-1)
                 gv->setVertexColor(temp.points[i]->getID(),"yellow");
