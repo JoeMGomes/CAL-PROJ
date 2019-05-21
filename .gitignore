@@ -5,4 +5,5 @@ Debug/
 proj
 .vscode/
 *.gch
+*.o
 *.orig

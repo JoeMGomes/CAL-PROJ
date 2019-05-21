@@ -1,7 +1,15 @@
-all: src/main.cpp src/connection.cpp src/edgetype.h src/graphviewer.cpp src/MutablePriorityQueue.h src/Road.cpp src/Point.cpp
-	g++ -g -o proj src/main.cpp src/connection.cpp src/edgetype.h src/graphviewer.cpp src/MutablePriorityQueue.h src/Road.cpp src/Point.cpp
-clean: 
-	rm -f proj
-force:
-	make clean
-	make all
+CC= g++
+LIBS = 
+OBJ = src/graphviewer.o src/connection.o src/Package.o src/Point.o src/Road.o src/SupportPoint.o src/Vehicle.o src/main.o
+CFLAGS = -g -Wall -Wextra -Werror #-MMD
+all: proj 
+
+%.o: %.cpp
+		$(CC) -c -o $@ $< $(CFLAGS) $(LIBS)
+
+proj: $(OBJ)
+		$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
+
+clean:
+	rm -rf *.o
+	rm -rf proj

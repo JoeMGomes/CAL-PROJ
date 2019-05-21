@@ -5,6 +5,8 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <Windows.h>
+#include <SupportPoint.h>
 
 #include "Point.h"
 #include "Road.h"
@@ -177,16 +179,82 @@ std::vector<Point *> getPath(int sourceID, int destID) {
     cout << "Ret path\n";
     return path;
 }
+void AdicionaEncomenda(){
 
+}
+void menuUser(){
+	cout << endl;
+			cout << " _______________________________________________________________________" << endl;
+			cout << "|                         Chose one option                              |" << endl;
+			cout << "|                                                                       |" << endl;
+			cout << "|      1 - Ask for a delivery                                           |" << endl;
+			cout << "|      2 - Exit                                                         |" << endl;
+			cout << "|                                                                       |" << endl;
+			cout << "|                                                                       |" << endl;
+			cout << "|_______________________________________________________________________|" << endl;
+
+	int opcao;
+	cin >> opcao;
+
+	switch(opcao){
+	case 1:
+	{
+		break;
+	}
+	case 2:{
+		break;
+	}
+	}
+}
+void menuBase(){
+	SupportPoint pontoApoio;
+	cout << endl;
+		cout << " _______________________________________________________________________" << endl;
+		cout << "|                         Chose one option                              |" << endl;
+		cout << "|                                                                       |" << endl;
+		cout << "|      1 - I am a user                                                  |" << endl;
+		cout << "|      2 - Control of the company                                       |" << endl;
+		cout << "|      3 - Exit                                                         |" << endl;
+		cout << "|                                                                       |" << endl;
+		cout << "|_______________________________________________________________________|" << endl;
+
+		int opcao;
+		cin >> opcao;
+
+		switch(opcao){
+		case 1:
+		{
+			menuUser();
+			break;
+		}
+		case 2:
+		{
+			break;		}
+		case 3:
+		{
+			cout << "The program will end now!" << endl;
+			break;
+		}
+		default: {
+			cout << "Sorry, not a Valid Choice. \n"
+			<< "Choose again.\n";
+			/*Sleep(3000);
+			system("CLS");
+			menuBase(); */ //eclipse es burro ou eu sou burra
+			break;
+		}
+		}
+}
 int main() {
-    initMap();
-    readMap("Fafe");
+	menuBase();
+   // initMap();
+    //readMap("Fafe");
 
     dijkstra(1238420328, 1238420266);
     std::vector<Road * > r;
-    displayMap(getPath(402328721,1238420455), r);
+    //displayMap(getPath(402328721,1238420455), r);
 
-    //displayMap(points,roads);
+   // displayMap(points,roads);
 
 
     getchar();
