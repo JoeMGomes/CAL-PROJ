@@ -8,6 +8,7 @@
 
 #include "Point.h"
 #include "Road.h"
+#include "MutablePriorityQueue.h"
 #ifdef linux
 #else
 #include <Windows.h>
@@ -22,6 +23,7 @@ Point * findPoint(int id) {
 
     for(auto p : points) {
         if(p->getID() == id) {
+            cout << "got it\n";
             return p;
         }
     }
@@ -92,22 +94,91 @@ void initMap() {
     gv->defineEdgeColor("black");
 }
 
-void displayMap() {
+void displayMap(vector<Point *> p, vector<Road *> r) {
 
-    for(auto p : points) {
+    for(auto p : p) {
         gv->addNode(p->getID(), p->getX(), p->getY());
+       // gv->setVertexLabel(p->getID(), "cenas");
     }
 
-    for(auto e : roads) {
+    for(auto e : r) {
         gv->addEdge(e->getID(),e->getSource()->getID(),e->getDest()->getID(), EdgeType::UNDIRECTED);
         //gv->setEdgeLabel(e->getID(),to_string( e->getWeight()));
     }
 }
 
+void dijkstra(int sourceID, int destID) {
+    cout << "Startin dijkstra\n";
+    Point * source = findPoint(sourceID);
+    Point * dest = findPoint(destID);
+    double oldDistance;
+
+    for(auto p : points) {
+        p->setDist(SIZE_MAX);
+        p->setPath(nullptr);
+        p->queueIndex = 0;
+    }
+
+    source->setDist(0);
+
+    MutablePriorityQueue q;
+    q.insert(source);
+
+    while(!q.empty()) {
+
+        source = q.extractMin();
+
+        if(source->equals(*dest)) {
+            break;
+        }
+
+        for(auto e : source->getRoads()) {
+            oldDistance = e->getDest()->getDist();
+
+            if(e->getDest()->getDist() > source->getDist() + e->getWeight()) {
+                e->getDest()->setDist(source->getDist() + e->getWeight());
+                e->getDest()->setPath(source);
+                if(oldDistance == SIZE_MAX) {
+                    q.insert(e->getDest());
+                } else {
+                    q.decreaseKey(e->getDest());
+                }
+            }
+        }
+    }
+            cout << "Found path\n";
+
+}
+
+std::vector<Point *> getPath(int sourceID, int destID) {
+
+    vector<Point *> path;
+    Point * dest = findPoint(destID);
+    Point * source = dest->getPath();
+
+    while(source != nullptr) {
+        path.push_back(source);
+        source = source->getPath();
+    }
+
+    path.reserve(path.size());
+    cout << "Ret path\n";
+    return path;
+}
+
 int main() {
     initMap();
-    readMap("Aveiro");
-    displayMap();
+    readMap("Fafe");
+
+    dijkstra(402328721, 1238420455);
+    std::vector<Road * > r;
+    displayMap(getPath(402328721,1238420455), r);
+
+    //displayMap(points,roads);
+
+
     getchar();
     return 0;
 }
+
+

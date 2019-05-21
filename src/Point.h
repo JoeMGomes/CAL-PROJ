@@ -10,13 +10,30 @@ private:
 	int id;
 	int x;
 	int y;
+	double dist;
+	
+	Point * path;
 	std::vector<Road* > roads;
 public:
+
+	//tem de ser publico
+	int queueIndex;
+
 	Point();
 	Point(int id, int x, int y);
 	int getID();
 	int getX();
 	int getY();
+	double getDist();
+	Point * getPath();
+	std::vector<Road*> getRoads();
+
+	void setDist(double dist);
+	void setPath(Point * path);
+
+	bool operator<(Point & p) const;
+
+	bool equals (Point & p) const;
 };
 
 #endif /* SRC_POINT_H_ */
