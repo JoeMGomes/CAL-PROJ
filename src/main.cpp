@@ -24,7 +24,8 @@ void menuBase();
 struct nodeEdge {
     std::vector<Point *> points;
     std::vector<Road *> roads;
-} typedef nodeEdge_t;
+    int lenght;
+}typedef nodeEdge_t;
 
 GraphViewer *gv;
 nodeEdge_t mainMap;
@@ -105,7 +106,7 @@ void readMap(string cityName) {
 
     file.close();
     cout << "Completed edge reading\n";
-    gv->rearrange();
+    gv->rearrange();//porque? isto e inutil, o gv ainda nao tem elementos
 
 }
 
@@ -138,7 +139,7 @@ void displayMap(nodeEdge_t graph) {
         // gv->setVertexLabel(p->getID(), "cenas");
     }
     for(auto e : graph.roads) {
-        gv->addEdge(e->getID(),e->getSource()->getID(),e->getDest()->getID(), EdgeType::DIRECTED);
+        gv->addEdge(e->getID(),e->getSource()->getID(),e->getDest()->getID(), EdgeType::UNDIRECTED);
         //gv->setEdgeLabel(e->getID(),to_string( e->getWeight()));
     }
 }
@@ -192,7 +193,7 @@ void dijkstra(int sourceID, int destID) {
 nodeEdge_t getPath(/*int sourceID, */int destID) {
 
     nodeEdge_t ret;
-
+    int x=0;
     vector<Point *> path;
     vector<Road *> roads, temp;
     Point * dest = findPoint(destID);
@@ -204,9 +205,11 @@ nodeEdge_t getPath(/*int sourceID, */int destID) {
         temp=dest->getRoads();
         source->setType(PATH);
         path.push_back(source);
-        for (unsigned int i=0; i<temp.size(); i++)
-            if (temp[i]->getDest()==source)
+        for (unsigned int i=0;i<temp.size();i++)
+            if (temp[i]->getDest()==source){
                 roads.push_back(temp[i]);
+                x+=temp[i]->getWeight();
+               }
         cout << source->getID() << endl;
         dest = source;
         source = source->getPath();
@@ -216,6 +219,7 @@ nodeEdge_t getPath(/*int sourceID, */int destID) {
     cout << "Ret path\n";
     ret.points = path;
     ret.roads = roads;
+    ret.lenght = x;
     updateColors(ret);
     return ret;
 }
@@ -323,16 +327,16 @@ void menuUser() {
     cin >> opcao;
 
     switch(opcao) {
-    case 1: {
-        AdicionaEncomenda();
-        sleep(2);
-        menuUser();
-        break;
-    }
-    case 2: {
-        menuBase();
-        break;
-    }
+        case 1:{
+            AdicionaEncomenda();
+            sleep(2);//porque?
+            menuUser();
+            break;
+        }
+        case 2: {
+            menuBase();
+            break;
+        }
     }
 }
 
@@ -356,9 +360,9 @@ nodeEdge_t nearesNeighbour(std::vector<Package *> packages, Point* supportPoint)
 }
 
 int main() {
-    initMap();
-    readMap("Fafe");
-    menuBase();
+    //initMap();
+    //readMap("Fafe");
+    //menuBase();
 
     /*int source=402328721,dest= 1238420455;
     //dijkstra(402328721, 1238420455);
