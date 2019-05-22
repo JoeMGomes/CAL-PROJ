@@ -22,7 +22,7 @@ typeOfPoint Point::getType(){
 }
 
 void Point::setType(typeOfPoint t){
-    type=t;
+    this->type=t;
 }
 
 int Point::getX() {
