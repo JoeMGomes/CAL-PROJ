@@ -70,7 +70,7 @@ void readMap(string cityName) {
             xOffset = x;
             yOffset = y;
         }
-        mainMap.points.push_back(new Point(id, x - xOffset, y - yOffset));
+        mainMap.points.push_back(new Point(id,  x -xOffset, yOffset -y));
         temp--;
     }
     cout << "Completed reading nodes\n";
@@ -137,7 +137,7 @@ void displayMap(nodeEdge_t graph) {
         // gv->setVertexLabel(p->getID(), "cenas");
     }
     for(auto e : graph.roads) {
-        gv->addEdge(e->getID(),e->getSource()->getID(),e->getDest()->getID(), EdgeType::UNDIRECTED);
+        gv->addEdge(e->getID(),e->getSource()->getID(),e->getDest()->getID(), EdgeType::DIRECTED);
         //gv->setEdgeLabel(e->getID(),to_string( e->getWeight()));
     }
 }
@@ -327,44 +327,49 @@ void menuUser() {
     }
 }
 
+
+nodeEdge_t nearesNeighbour(std::vector<Package *> package){
+
+}
+
 int main() {
     //initMap();
     //readMap("Fafe");
     //menuBase();
 
+    int source=402328721,dest= 1238420455;
     //dijkstra(402328721, 1238420455);
     //displayMap(getPath(402328721,1238420455), r);
 
-    int opcao=2;
-    //cin >> opcao;
+    int opcao;
+    cin >> opcao;
     if (cin.fail()) {
         cin.clear();
         cin.ignore(1000,'\n');
     }
     switch(opcao) {
     case 1: {
-        int source,dest;
+ 
         while (true) {
             cout<<"Source:";
-            cin>>source;
+           /* cin>>source;
             if (cin.fail()) {
                 cin.clear();
                 cin.ignore(1000,'\n');
                 continue;
-            }
+            }*/
             cout<<"Destination:";
-            cin>>dest;
+           /* cin>>dest;
             if (cin.fail()) {
                 cin.clear();
                 cin.ignore(1000,'\n');
                 continue;
-            }
+            }*/
             break;
         }
         initMap();
-        readMap("Fafe");
-        dijkstra(source,dest);
-        vector<Road * > r;
+        readMap("Porto");
+        //dijkstra(source,dest);
         displayMap(mainMap);
         break;
     }
@@ -384,6 +389,7 @@ int main() {
         for (long unsigned int i=0; i<temp.roads.size(); i++) {
             gv->setEdgeColor(temp.roads[i]->getID(),"green");
         }*/
+        
         displayMap(mainMap);
 
         break;
