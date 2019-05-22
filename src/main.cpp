@@ -231,11 +231,16 @@ void AdicionaEncomenda() {
     cin >> source;
     cout << "ID of the delivery point?" << endl;
     cin >> delivery;
+    if(findPoint(delivery) && findPoint(source)){
     Source = findPoint(source);
     Delivery = findPoint(delivery);
     pacote.setPickUpPoint(Source);
     pacote.setDeliveryPoint(Delivery);
     PackagesToDelivery.push_back(pacote);
+    cout << "Your order has been added" << endl;
+    }
+    else cout << "Your order hasn't been added." << endl << "Please check is the points ID's are correct" << endl;
+    
 }
 
 void menuControler() {
@@ -306,7 +311,7 @@ void menuUser() {
     cout << " _______________________________________________________________________" << endl;
     cout << "|                         Chose one option                              |" << endl;
     cout << "|                                                                       |" << endl;
-    cout << "|      1 - Ask for a delivery                                           |" << endl;
+    cout << "|      1 - New Order                                                    |" << endl;
     cout << "|      2 - Exit                                                         |" << endl;
     cout << "|                                                                       |" << endl;
     cout << "|                                                                       |" << endl;
@@ -318,6 +323,8 @@ void menuUser() {
     switch(opcao) {
         case 1:{
             AdicionaEncomenda();
+            sleep(2);
+            menuUser();
             break;
         }
         case 2: {
@@ -333,9 +340,9 @@ nodeEdge_t nearesNeighbour(std::vector<Package *> package){
 }
 
 int main() {
-    //initMap();
-    //readMap("Fafe");
-    //menuBase();
+    initMap();
+    readMap("Fafe");
+    menuBase();
 
     int source=402328721,dest= 1238420455;
     //dijkstra(402328721, 1238420455);
