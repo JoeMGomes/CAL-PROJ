@@ -115,11 +115,25 @@ void initMap() {
     gv->defineEdgeColor("black");
 }
 
+void updateColors(nodeEdge_t graph){
+    gv->setVertexColor(graph.points[0]->getID(),"ORANGE");
+    for (long unsigned int i=1; i<graph.points.size(); i++) {
+        if (i==graph.points.size()-1)
+            gv->setVertexColor(graph.points[i]->getID(),"YELLOW");
+        else gv->setVertexColor(graph.points[i]->getID(),"GREEN");
+    }
+    for (long unsigned int i=0; i<graph.roads.size(); i++) {
+        gv->setEdgeColor(graph.roads[i]->getID(),"GREEN");
+    }
+}
+
 void displayMap(nodeEdge_t graph) {
     for(auto p : graph.points) {
         gv->addNode(p->getID(), p->getX(), p->getY());
-        if(p->getNum()==1)gv->setVertexColor(p->getID(),RED);//erro duas vezes o mesmo valor
-        if(p->getNum()==1)gv->setVertexColor(p->getID(),GREEN);
+        /*if (p->getType()==DELIVERY) gv->setVertexColor(p->getID(),ORANGE);
+        else if (p->getType()==SOURCE) gv->setVertexColor(p->getID(),YELLOW);
+        else if (p->getType()==PATH) gv->setVertexColor(p->getID(),GREEN);*/
+
         // gv->setVertexLabel(p->getID(), "cenas");
     }
     for(auto e : graph.roads) {
@@ -184,8 +198,10 @@ nodeEdge_t getPath(/*int sourceID, */int destID) {
     Point * source = dest->getPath();
 
     path.push_back(dest);
+    dest->setType(DELIVERY);
     while(source != nullptr) {
         temp=dest->getRoads();
+        source->setType(PATH);
         path.push_back(source);
         for (unsigned int i=0;i<temp.size();i++)
             if (temp[i]->getDest()==source)
@@ -194,11 +210,12 @@ nodeEdge_t getPath(/*int sourceID, */int destID) {
         dest = source;
         source = source->getPath();
     }
-
+    path[path.size()-1]->setType(SOURCE);
     path.reserve(path.size());
     cout << "Ret path\n";
     ret.points = path;
     ret.roads = roads;
+    updateColors(ret);
     return ret;
 }
 
@@ -359,14 +376,14 @@ int main() {
         cout<<"Origin: "<<source<<endl<<"Destination: "<<dest<<endl;
         dijkstra(source,dest);
         nodeEdge_t temp=getPath(dest);
-        for (long unsigned int i=0; i<temp.points.size(); i++) {
+        /*for (long unsigned int i=0; i<temp.points.size(); i++) {
             if (i==0||i==temp.points.size()-1)
                 gv->setVertexColor(temp.points[i]->getID(),"yellow");
             else gv->setVertexColor(temp.points[i]->getID(),"green");
         }
         for (long unsigned int i=0; i<temp.roads.size(); i++) {
             gv->setEdgeColor(temp.roads[i]->getID(),"green");
-        }
+        }*/
         displayMap(mainMap);
 
         break;

@@ -10,15 +10,21 @@ Point::Point(int id, int x, int y) {
     this->x = x;
     this->y = y;
     this->id = id;
+    type=NORMAL;
 }
 
 int Point::getID() {
     return this->id;
 }
 
-int Point::getNum(){
-    return num;
+typeOfPoint Point::getType(){
+    return type;
 }
+
+void Point::setType(typeOfPoint t){
+    type=t;
+}
+
 int Point::getX() {
     return this->x;
 }

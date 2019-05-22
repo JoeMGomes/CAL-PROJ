@@ -5,39 +5,39 @@
 
 class Road;
 
+enum typeOfPoint{NORMAL, SOURCE, DELIVERY, PATH};
+
 class Point {//Node(?) can change it later
-private:
-	int id;
-	int x;
-	int y;
-	double dist;
-	int num; //1 e para source, 2 e para delivery
-	
-	Point * path;
+	private:
+		int id;
+		int x;
+		int y;
+		double dist;
+		enum typeOfPoint type; 
+		Point * path;
+		std::vector<Road* > roads;
+	public:
 
-	std::vector<Road* > roads;
-public:
+		//tem de ser publico
+		int queueIndex;
 
-	//tem de ser publico
-	int queueIndex;
+		Point();
+		Point(int id, int x, int y);
+		int getID();
+		int getX();
+		int getY();
+		typeOfPoint getType();
+		void setType(typeOfPoint t);
+		double getDist();
+		Point * getPath();
+		std::vector<Road*> getRoads();
 
-	Point();
-	Point(int id, int x, int y);
-	int getID();
-	int getX();
-	int getY();
-	int getNum();
-	double getDist();
-	Point * getPath();
-	std::vector<Road*> getRoads();
+		void setDist(double dist);
+		void setPath(Point * path);
+		void addRoad(Road * r);
 
-	void setDist(double dist);
-	void setPath(Point * path);
-	void addRoad(Road * r);
-
-	bool operator<(Point & p) const;
-
-	bool equals (Point & p) const;
+		bool operator<(Point & p) const;
+		bool equals (Point & p) const;
 };
 
 #endif /* SRC_POINT_H_ */
