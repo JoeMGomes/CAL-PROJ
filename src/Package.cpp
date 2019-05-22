@@ -26,3 +26,11 @@ void Package::setDeliveryPoint(Point* DP){
 	this->DeliveryPoint = DP;
 
 }
+
+Point * Package::getDeliveryPoint()const{
+	return this->DeliveryPoint;
+}
+Point * Package::getPickUpPoint()const{
+	return this->PickUpPoint;
+}
+

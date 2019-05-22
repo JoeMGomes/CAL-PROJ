@@ -32,6 +32,7 @@ vector<Vehicle> Fleet;
 vector<Package> PackagesToDelivery;
 
 void menuUser();
+nodeEdge_t nearesNeighbour(std::vector<Package *> packages);
 
 Point * findPoint(int id) {
 
@@ -115,7 +116,7 @@ void initMap() {
     gv->defineEdgeColor("black");
 }
 
-void updateColors(nodeEdge_t graph){
+void updateColors(nodeEdge_t graph) {
     gv->setVertexColor(graph.points[0]->getID(),"ORANGE");
     for (long unsigned int i=1; i<graph.points.size(); i++) {
         if (i==graph.points.size()-1)
@@ -203,7 +204,7 @@ nodeEdge_t getPath(/*int sourceID, */int destID) {
         temp=dest->getRoads();
         source->setType(PATH);
         path.push_back(source);
-        for (unsigned int i=0;i<temp.size();i++)
+        for (unsigned int i=0; i<temp.size(); i++)
             if (temp[i]->getDest()==source)
                 roads.push_back(temp[i]);
         cout << source->getID() << endl;
@@ -219,10 +220,8 @@ nodeEdge_t getPath(/*int sourceID, */int destID) {
     return ret;
 }
 
-void PintaSources(nodeEdge_t graph){}
-
 void AdicionaEncomenda() {
-    Package pacote;
+    Package *pacote;
     Point* Source;
     Point* Delivery;
     int source;
@@ -231,16 +230,18 @@ void AdicionaEncomenda() {
     cin >> source;
     cout << "ID of the delivery point?" << endl;
     cin >> delivery;
-    if(findPoint(delivery) && findPoint(source)){
     Source = findPoint(source);
     Delivery = findPoint(delivery);
-    pacote.setPickUpPoint(Source);
-    pacote.setDeliveryPoint(Delivery);
-    PackagesToDelivery.push_back(pacote);
-    cout << "Your order has been added" << endl;
+    if(Source != nullptr && Delivery != nullptr) {
+        Source->setType(SOURCE);
+        Delivery->setType(DELIVERY);
+        pacote->setPickUpPoint(Source);
+        pacote->setDeliveryPoint(Delivery);
+        PackagesToDelivery.push_back(pacote);
+        cout << "Your order has been added" << endl;
     }
     else cout << "Your order hasn't been added." << endl << "Please check is the points ID's are correct" << endl;
-    
+
 }
 
 void menuControler() {
@@ -258,19 +259,19 @@ void menuControler() {
     int opcao;
     cin >> opcao;
     switch(opcao) {
-        case 1: {
-            cout << "The red points represent pickup points and the green ones represent delivery points." << endl;
-            displayMap(mainMap);
-            break;
-        }
-        case 2: {
-            break;
-        }
-        case 3: {
-            break;
-        }
-        default:
-            break;
+    case 1: {
+        cout << "The red points represent pickup points and the green ones represent delivery points." << endl;
+        displayMap(mainMap);
+        break;
+    }
+    case 2: {
+        break;
+    }
+    case 3: {
+        break;
+    }
+    default:
+        break;
     }
 }
 
@@ -289,20 +290,21 @@ void menuBase() {
     cin >> opcao;
 
     switch(opcao) {
-        case 1:{
-            menuUser();
-            break;}
-        case 2:{
-            menuControler();
-            break;
-        }
-        case 3:
-            cout << "The program will end now!" << endl;
-            exit(0);
-        default:
-            cout << "Sorry, not a valid choice. Choose again." << endl;
-            menuBase();
-            break;
+    case 1: {
+        menuUser();
+        break;
+    }
+    case 2: {
+        menuControler();
+        break;
+    }
+    case 3:
+        cout << "The program will end now!" << endl;
+        exit(0);
+    default:
+        cout << "Sorry, not a valid choice. Choose again." << endl;
+        menuBase();
+        break;
     }
 }
 
@@ -321,21 +323,35 @@ void menuUser() {
     cin >> opcao;
 
     switch(opcao) {
-        case 1:{
-            AdicionaEncomenda();
-            sleep(2);
-            menuUser();
-            break;
-        }
-        case 2: {
-            menuBase();
-            break;
-        }
+    case 1: {
+        AdicionaEncomenda();
+        sleep(2);
+        menuUser();
+        break;
+    }
+    case 2: {
+        menuBase();
+        break;
+    }
     }
 }
 
 
-nodeEdge_t nearesNeighbour(std::vector<Package *> package){
+nodeEdge_t nearesNeighbour(std::vector<Package *> packages, Point* supportPoint) {
+
+    std::vector<Point*> pointsToGo;
+    for(auto p : packages){
+        pointsToGo.push_back(p->getPickUpPoint());
+    }
+
+    int dists[packages.size];
+
+    Point * currentPoint = supportPoint;
+    for(int i = 0, i < pointsToGo.size(), i++){
+        dijkstra(currentPoint, pointsToGo.at(i));
+        dists[i]=getPath(pointsToGo.at(i)).weight;
+    }
+
 
 }
 
@@ -344,11 +360,11 @@ int main() {
     readMap("Fafe");
     menuBase();
 
-    int source=402328721,dest= 1238420455;
+    /*int source=402328721,dest= 1238420455;
     //dijkstra(402328721, 1238420455);
     //displayMap(getPath(402328721,1238420455), r);
 
-    int opcao;
+    /* int opcao;
     cin >> opcao;
     if (cin.fail()) {
         cin.clear();
@@ -356,7 +372,7 @@ int main() {
     }
     switch(opcao) {
     case 1: {
- 
+
         while (true) {
             cout<<"Source:";
            /* cin>>source;
@@ -364,14 +380,14 @@ int main() {
                 cin.clear();
                 cin.ignore(1000,'\n');
                 continue;
-            }*/
+            }
             cout<<"Destination:";
            /* cin>>dest;
             if (cin.fail()) {
                 cin.clear();
                 cin.ignore(1000,'\n');
                 continue;
-            }*/
+            }
             break;
         }
         initMap();
@@ -395,8 +411,8 @@ int main() {
         }
         for (long unsigned int i=0; i<temp.roads.size(); i++) {
             gv->setEdgeColor(temp.roads[i]->getID(),"green");
-        }*/
-        
+        }*
+
         displayMap(mainMap);
 
         break;
@@ -404,5 +420,5 @@ int main() {
     case 3:
         menuBase();
         break;
-    }
+    }*/
 }
