@@ -4,6 +4,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <algorithm>
 #include "SupportPoint.h"
 #include "Package.h"
 
@@ -25,15 +26,20 @@ struct nodeEdge {
     std::vector<Point *> points;
     std::vector<Road *> roads;
     int lenght;
-}typedef nodeEdge_t;
+
+} typedef nodeEdge_t;
+
+bool compSL(nodeEdge_t i,nodeEdge_t j) {
+    return i.lenght < j.lenght;
+}
 
 GraphViewer *gv;
 nodeEdge_t mainMap;
 vector<Vehicle> Fleet;
-vector<Package> PackagesToDelivery;
+vector<Package*> PackagesToDelivery;
 
 void menuUser();
-nodeEdge_t nearesNeighbour(std::vector<Package *> packages);
+std::vector<nodeEdge_t *> nearesNeighbour(std::vector<Package *> packages);
 
 Point * findPoint(int id) {
 
@@ -169,15 +175,12 @@ void dijkstra(int sourceID, int destID) {
             break;
         }
 
-        cout << source->getRoads().at(0)->getID() << endl;
-
         for(auto e : source->getRoads()) {
             oldDistance = e->getDest()->getDist();
             cout << e->getID();
             if(e->getDest()->getDist() > source->getDist() + e->getWeight()) {
                 e->getDest()->setDist(source->getDist() + e->getWeight());
                 e->getDest()->setPath(source);
-                cout << source->getID();
                 if(oldDistance == SIZE_MAX) {
                     q.insert(e->getDest());
                 } else {
@@ -186,7 +189,6 @@ void dijkstra(int sourceID, int destID) {
             }
         }
     }
-    cout << "Found path\n";
 
 }
 
@@ -205,12 +207,11 @@ nodeEdge_t getPath(/*int sourceID, */int destID) {
         temp=dest->getRoads();
         source->setType(PATH);
         path.push_back(source);
-        for (unsigned int i=0;i<temp.size();i++)
-            if (temp[i]->getDest()==source){
+        for (unsigned int i=0; i<temp.size(); i++)
+            if (temp[i]->getDest()==source) {
                 roads.push_back(temp[i]);
                 x+=temp[i]->getWeight();
-               }
-        cout << source->getID() << endl;
+            }
         dest = source;
         source = source->getPath();
     }
@@ -327,41 +328,77 @@ void menuUser() {
     cin >> opcao;
 
     switch(opcao) {
-        case 1:{
-            AdicionaEncomenda();
-            sleep(2);//porque?
-            menuUser();
-            break;
-        }
-        case 2: {
-            menuBase();
-            break;
-        }
+    case 1: {
+        AdicionaEncomenda();
+        sleep(2);//porque?
+        menuUser();
+        break;
+    }
+    case 2: {
+        menuBase();
+        break;
+    }
     }
 }
 
 
-nodeEdge_t nearesNeighbour(std::vector<Package *> packages, Point* supportPoint) {
+std::vector<nodeEdge_t *> nearesNeighbour(std::vector<Package *> packages, Point* supportPoint) {
 
-    std::vector<Point*> pointsToGo;
-    for(auto p : packages){
+    cout << "Starting NN\n";
+    std::vector<nodeEdge_t *> finalPaths; //vector a retornar
+
+    std::vector<Point*> pointsToGo; //pontos a precorrer a cada iteração
+    
+    for(auto p : packages) { //PUP iniciais
         pointsToGo.push_back(p->getPickUpPoint());
+        cout << "Added PUP\n";
     }
 
-    int dists[packages.size];
+    std::vector<nodeEdge_t> dists;
 
     Point * currentPoint = supportPoint;
-    for(int i = 0, i < pointsToGo.size(), i++){
-        dijkstra(currentPoint, pointsToGo.at(i));
-        dists[i]=getPath(pointsToGo.at(i)).weight;
+    while(!pointsToGo.empty()) {
+        //guarda em dists os caminhos todos calculados
+        for(unsigned int i = 0; i < pointsToGo.size(); i++) {
+            dijkstra(currentPoint->getID(), pointsToGo.at(i)->getID());
+            dists.push_back(getPath(pointsToGo.at(i)->getID()));
+        }
+
+        auto bestPath = min_element(dists.begin(),dists.end(),compSL);//procura o menor caminho
+        int temp =  bestPath -dists.begin();//index do menor caminho
+        finalPaths.push_back(&dists.at(temp));//coloca o caminho no vetor a retornar
+        currentPoint = pointsToGo.at(temp);//atualiza a posição atual
+        if(pointsToGo.at(temp)->getType() == SOURCE) { //Se o ponto era uma Source, coloca a delivery
+            pointsToGo.at(temp) = packages.at(temp)->getDeliveryPoint();
+        } else if(pointsToGo.at(temp)->getType() == DELIVERY) { //se era uma delivery retira do vetor
+            pointsToGo.erase(pointsToGo.begin()+temp);
+        }
+        dists.clear();//prepara proxima iteração
+        cout << "Iter\n";
     }
 
+    dijkstra(currentPoint->getID(), supportPoint->getID());
+    auto retPath = getPath(supportPoint->getID());
+    finalPaths.push_back(&retPath);
 
+    return finalPaths;
 }
 
 int main() {
-    //initMap();
-    //readMap("Fafe");
+    initMap();
+    readMap("Fafe");
+
+    AdicionaEncomenda();
+    std::vector<nodeEdge_t *> nn = nearesNeighbour(PackagesToDelivery, findPoint(1052802810));
+
+    for(auto n : nn){
+        displayMap(*n);
+    }
+
+    getchar();
+    gv->closeWindow();
+
+    // displayMap(mainMap);
     //menuBase();
 
     /*int source=402328721,dest= 1238420455;
