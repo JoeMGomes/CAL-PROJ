@@ -148,6 +148,7 @@ void displayMap(nodeEdge_t graph) {
         gv->addEdge(e->getID(),e->getSource()->getID(),e->getDest()->getID(), EdgeType::UNDIRECTED);
         //gv->setEdgeLabel(e->getID(),to_string( e->getWeight()));
     }
+    gv->rearrange();
 }
 
 void dijkstra(int sourceID, int destID) {
@@ -221,6 +222,7 @@ nodeEdge_t getPath(/*int sourceID, */int destID) {
     ret.points = path;
     ret.roads = roads;
     ret.lenght = x;
+    if (x==0) cout<<"Couldn't find path.\n";
     updateColors(ret);
     return ret;
 }
@@ -229,12 +231,12 @@ void AdicionaEncomenda() {
     Package *pacote;
     Point* Source;
     Point* Delivery;
-    int source;
-    int delivery;
+    int source=26130574;
+    int delivery=26130608;
     cout << "ID of the source point?" << endl;
-    cin >> source;
+    //cin >> source;
     cout << "ID of the delivery point?" << endl;
-    cin >> delivery;
+    //cin >> delivery;
     Source = findPoint(source);
     Delivery = findPoint(delivery);
     if(Source != nullptr && Delivery != nullptr) {
@@ -394,7 +396,7 @@ int main() {
     for(auto n : nn){
         displayMap(*n);
     }
-
+    
     getchar();
     gv->closeWindow();
 
