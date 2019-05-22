@@ -388,6 +388,7 @@ std::vector<nodeEdge_t *> nearestNeighbour(std::vector<Package *> packages, Poin
     auto retPath = getPath(supportPoint->getID());
     updateColors(retPath);
     finalPaths.push_back(&retPath);
+    gv->setVertexColor(supportPoint->getID(),RED);
 
     return finalPaths;
 }
