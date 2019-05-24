@@ -36,9 +36,8 @@ bool compSL(nodeEdge_t i,nodeEdge_t j) {
 GraphViewer *gv;
 nodeEdge_t mainMap;
 vector<Vehicle> Fleet;
-vector<Package*> PackagesToDelivery;
+vector<Package> PackagesToDelivery;
 
-void menuUser();
 std::vector<nodeEdge_t *> nearestNeighbour(std::vector<Package *> packages);
 
 Point * findPoint(int id) {
@@ -154,6 +153,7 @@ void displayMap(nodeEdge_t graph) {
 
 void dijkstra(int sourceID, int destID) {
     cout << "Startin dijkstra\n";
+    cout << sourceID<<"\t"<<destID<<endl;
     Point * source = findPoint(sourceID);
     Point * dest = findPoint(destID);
     double oldDistance;
@@ -226,12 +226,12 @@ nodeEdge_t getPath(/*int sourceID, */int destID) {
     return ret;
 }
 
-void AdicionaEncomenda() {
-    Package *pacote;
+void AdicionaEncomenda(int source, int delivery) {
+    Package pacote;
     Point* Source;
     Point* Delivery;
-    int source=26130574;
-    int delivery=26130608;
+    //int source=source;//26130574;
+    //int delivery=dest;//=26130608;
     cout << "ID of the source point?" << endl;
     //cin >> source;
     cout << "ID of the delivery point?" << endl;
@@ -241,10 +241,12 @@ void AdicionaEncomenda() {
     if(Source != nullptr && Delivery != nullptr) {
         Source->setType(SOURCE);
         Delivery->setType(DELIVERY);
-        pacote->setPickUpPoint(Source);
-        pacote->setDeliveryPoint(Delivery);
+        pacote.setPickUpPoint(Source);
+        pacote.setDeliveryPoint(Delivery);
         PackagesToDelivery.push_back(pacote);
         cout << "Your order has been added" << endl;
+        //cout<<pacote->getPickUpPoint()->getID()<<"\t"<<pacote->getDeliveryPoint()->getID()<<endl;
+
     }
     else cout << "Your order hasn't been added." << endl << "Please check is the points ID's are correct" << endl;
 
@@ -330,7 +332,7 @@ void menuUser() {
 
     switch(opcao) {
     case 1: {
-        AdicionaEncomenda();
+        AdicionaEncomenda(26130574,26130608);
         sleep(2);//porque?
         menuUser();
         break;
@@ -343,7 +345,7 @@ void menuUser() {
 }
 
 
-std::vector<nodeEdge_t *> nearestNeighbour(std::vector<Package *> packages, Point* supportPoint) {
+std::vector<nodeEdge_t *> nearestNeighbour(std::vector<Package> packages, Point* supportPoint) {
 
     cout << "Starting NN\n";
     std::vector<nodeEdge_t *> finalPaths; //vector a retornar
@@ -351,8 +353,8 @@ std::vector<nodeEdge_t *> nearestNeighbour(std::vector<Package *> packages, Poin
     std::vector<Point*> pointsToGo; //pontos a precorrer a cada iteração
 
     for(auto p : packages) { //PUP iniciais
-        pointsToGo.push_back(p->getPickUpPoint());
-        cout << "Added PUP\n";
+        pointsToGo.push_back(p.getPickUpPoint());
+        cout << "Added PUP "<<p.getPickUpPoint()->getID()<<"\t"<<p.getDeliveryPoint()->getID()<<endl;
     }
 
     std::vector<nodeEdge_t> dists;
@@ -368,12 +370,12 @@ std::vector<nodeEdge_t *> nearestNeighbour(std::vector<Package *> packages, Poin
 
         auto bestPath = min_element(dists.begin(),dists.end(),compSL);//procura o menor caminho
         int temp =  bestPath - dists.begin();//index do menor caminho
-        finalPaths.push_back(&dists.at(temp));//coloca o caminho no vetor a retornar
+        finalPaths.push_back(&(dists.at(temp)));//coloca o caminho no vetor a retornar
         updateColors(dists.at(temp));
         currentPoint = pointsToGo.at(temp);//atualiza a posição atual
         cout << "AAA: " << pointsToGo.at(temp)->getType() ;
         if(pointsToGo.at(temp)->getType() == SOURCE) { //Se o ponto era uma Source, coloca a delivery
-            pointsToGo.at(temp) = packages.at(temp)->getDeliveryPoint();
+            pointsToGo.at(temp) = packages.at(temp).getDeliveryPoint();
             cout << "switch\n";
         } else if(pointsToGo.at(temp)->getType() == DELIVERY) { //se era uma delivery retira do vetor
             pointsToGo.erase(pointsToGo.begin()+temp);
@@ -396,7 +398,12 @@ std::vector<nodeEdge_t *> nearestNeighbour(std::vector<Package *> packages, Poin
 int main() {
     initMap();
     readMap("Fafe");
-    AdicionaEncomenda();
+    AdicionaEncomenda(26130574,26130608);
+    AdicionaEncomenda(1052803108,1242959130);
+    cout<<"Packages:\n";
+    cout<<PackagesToDelivery[0].getPickUpPoint()->getID()<<"\t"<<PackagesToDelivery[0].getDeliveryPoint()->getID()<<endl;
+    cout<<PackagesToDelivery[1].getPickUpPoint()->getID()<<"\t"<<PackagesToDelivery[1].getDeliveryPoint()->getID()<<endl;
+
     std::vector<nodeEdge_t *> nn = nearestNeighbour(PackagesToDelivery, findPoint(1052802810));
 
     //for(auto n : nn) {
