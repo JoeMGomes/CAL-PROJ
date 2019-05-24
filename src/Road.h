@@ -1,6 +1,7 @@
 #ifndef ROAD_H_
 #define ROAD_H_
 #include "Point.h"
+#include <cmath>
 
 class Point;
 

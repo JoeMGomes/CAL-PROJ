@@ -36,7 +36,8 @@ bool compSL(nodeEdge_t i,nodeEdge_t j) {
 GraphViewer *gv;
 nodeEdge_t mainMap;
 vector<Vehicle> Fleet;
-vector<Package> PackagesToDelivery;
+vector<vector<Package>> PackagesToDelivery;
+Point * centralPoint;
 
 std::vector<nodeEdge_t *> nearestNeighbour(std::vector<Package *> packages);
 
@@ -111,7 +112,7 @@ void readMap(string cityName) {
 
     file.close();
     cout << "Completed edge reading\n";
-    gv->rearrange();//porque? isto e inutil, o gv ainda nao tem elementos
+    centralPoint = findPoint(1052802810);
 
 }
 
@@ -243,13 +244,29 @@ void AdicionaEncomenda(int source, int delivery) {
         Delivery->setType(DELIVERY);
         pacote.setPickUpPoint(Source);
         pacote.setDeliveryPoint(Delivery);
-        PackagesToDelivery.push_back(pacote);
+        PackagesToDelivery[0].push_back(pacote);
         cout << "Your order has been added" << endl;
         //cout<<pacote->getPickUpPoint()->getID()<<"\t"<<pacote->getDeliveryPoint()->getID()<<endl;
 
     }
     else cout << "Your order hasn't been added." << endl << "Please check is the points ID's are correct" << endl;
 
+}
+
+void distributePackages(int n){
+    vector<Package> vec;
+    float angle, divangle=360/n;
+    cout<<"Divangle:"<<divangle;
+    for (int i=1;i<=n;i++){
+        PackagesToDelivery.push_back(vec);
+    }
+    for (long unsigned i=0;i<PackagesToDelivery[0].size();i++){
+        angle = -180 / M_PI *atan2(PackagesToDelivery[0][i].getPickUpPoint()->getY()-centralPoint->getY(),PackagesToDelivery[0][i].getPickUpPoint()->getX()- centralPoint->getX());
+        if (angle<0) angle+=360;
+        cout<<"\t"<<angle;
+        PackagesToDelivery[ceil(angle/divangle)].push_back(PackagesToDelivery[0][i]);
+    }
+    
 }
 
 void menuControler() {
@@ -333,7 +350,6 @@ void menuUser() {
     switch(opcao) {
     case 1: {
         AdicionaEncomenda(26130574,26130608);
-        sleep(2);//porque?
         menuUser();
         break;
     }
@@ -398,14 +414,18 @@ std::vector<nodeEdge_t *> nearestNeighbour(std::vector<Package> packages, Point*
 int main() {
     initMap();
     readMap("Fafe");
+    vector<Package> vec;
+    PackagesToDelivery.push_back(vec);
     AdicionaEncomenda(26130574,26130608);
     AdicionaEncomenda(1052803108,1242959130);
-    cout<<"Packages:\n";
-    cout<<PackagesToDelivery[0].getPickUpPoint()->getID()<<"\t"<<PackagesToDelivery[0].getDeliveryPoint()->getID()<<endl;
-    cout<<PackagesToDelivery[1].getPickUpPoint()->getID()<<"\t"<<PackagesToDelivery[1].getDeliveryPoint()->getID()<<endl;
-
-    std::vector<nodeEdge_t *> nn = nearestNeighbour(PackagesToDelivery, findPoint(1052802810));
-
+    AdicionaEncomenda(1052802706,1229047667);
+    distributePackages(2);
+    cout<<"Sizes:"<<PackagesToDelivery.size()<<"\t"<<PackagesToDelivery[1].size()<<"\t"<<PackagesToDelivery[2].size()<<endl;
+    for (long unsigned i=1;i<PackagesToDelivery.size();i++)
+        std::vector<nodeEdge_t *> nn = nearestNeighbour(PackagesToDelivery[i], centralPoint);
+    //cout<<PackagesToDelivery[0].getPickUpPoint()->getID()<<"\t"<<PackagesToDelivery[0].getDeliveryPoint()->getID()<<endl;
+    //cout<<PackagesToDelivery[1].getPickUpPoint()->getID()<<"\t"<<PackagesToDelivery[1].getDeliveryPoint()->getID()<<endl;
+    
     //for(auto n : nn) {
         //updateColors(*n);
     //}
