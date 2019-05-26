@@ -124,18 +124,47 @@ void initMap() {
 }
 
 void updateColors(nodeEdge_t graph, int color) {
-    string cor = "";
-    if (color == 1) cor = "RED";
-    if (color == 2) cor = "PINK";
-    if (color == 3) cor = "BLUE";
-    if (color == 4) cor = "LIGH_GRAY"; //sim, tou a limitar o numero de carrinhas a 4 */
+    string cor;
+    switch (color)
+    {
+    case 1:
+        cor = "GREEN";
+        break;
+    case 2:
+        cor = "BLUE";
+        break;
+    case 3:
+        cor = "PINK";
+        break;
+    case 4:
+        cor = "LIGHT_GRAY";
+        break;
+    case 5:
+        cor = "WHITE";
+        break;
+    case 6:
+        cor = "MAGENTA";
+        break;
+    case 7:
+        cor = "CYAN";
+        break;
+    case 8:
+        cor = "GRAY";
+        break;
+    case 9:
+        cor = "DARK_GRAY";
+        break;
+    default:
+        cor = "BLACK";
+        break;
+    }
 
     for (long unsigned int i=1; i<graph.points.size(); i++) {
         if (graph.points[i]->getType()==DELIVERY)
             gv->setVertexColor(graph.points[i]->getID(),"YELLOW");
         else if (graph.points[i]->getType()==SOURCE)
             gv->setVertexColor(graph.points[i]->getID(),"ORANGE");
-        else gv->setVertexColor(graph.points[i]->getID(),"GREEN");
+        else gv->setVertexColor(graph.points[i]->getID(),cor);
     }
     for (long unsigned int i=0; i<graph.roads.size(); i++) {
         gv->setEdgeColor(graph.roads[i]->getID(), cor);
@@ -395,7 +424,7 @@ std::vector<nodeEdge_t *> nearestNeighbour(std::vector<Package> packages, Point*
         auto bestPath = min_element(dists.begin(),dists.end(),compSL);//procura o menor caminho
         int temp =  bestPath - dists.begin();//index do menor caminho
         finalPaths.push_back(&(dists.at(temp)));//coloca o caminho no vetor a retornar
-        updateColors(dists.at(temp),1);
+        updateColors(dists.at(temp),color);
         currentPoint = pointsToGo.at(temp);//atualiza a posição atual
         cout << "AAA: " << pointsToGo.at(temp)->getType() ;
         if(pointsToGo.at(temp)->getType() == SOURCE) { //Se o ponto era uma Source, coloca a delivery
@@ -427,8 +456,9 @@ int main() {
     AdicionaEncomenda(26130574,26130608);
     AdicionaEncomenda(1052803108,1242959130);
     AdicionaEncomenda(1052802706,1229047667);
-    distributePackages(2);
-    cout<<"Sizes:"<<PackagesToDelivery.size()<<"\t"<<PackagesToDelivery[1].size()<<"\t"<<PackagesToDelivery[2].size()<<endl;
+    distributePackages(6);
+    cout<<"Sizes:"<<PackagesToDelivery[0].size()<<"\t"<<PackagesToDelivery[1].size()<<"\t"<<PackagesToDelivery[2].size()
+    <<"\t"<<PackagesToDelivery[3].size()<<"\t"<<PackagesToDelivery[4].size()<<"\t"<<PackagesToDelivery[5].size()<<"\t"<<PackagesToDelivery[6].size()<<endl;
     for (long unsigned i=1;i<PackagesToDelivery.size();i++)
         std::vector<nodeEdge_t *> nn = nearestNeighbour(PackagesToDelivery[i], centralPoint, i);
     //cout<<PackagesToDelivery[0].getPickUpPoint()->getID()<<"\t"<<PackagesToDelivery[0].getDeliveryPoint()->getID()<<endl;
@@ -440,7 +470,7 @@ int main() {
     
     //getchar();
     //gv->closeWindow();
-
+    cout<<"hgvvg\n";
      displayMap(mainMap);
     //menuBase();
 
@@ -448,7 +478,7 @@ int main() {
     //dijkstra(402328721, 1238420455);
     //displayMap(getPath(402328721,1238420455), r);
 
-    /* int opcao;
+     int opcao;
     cin >> opcao;
     if (cin.fail()) {
         cin.clear();
@@ -459,14 +489,14 @@ int main() {
 
         while (true) {
             cout<<"Source:";
-           /* cin>>source;
+            cin>>source;
             if (cin.fail()) {
                 cin.clear();
                 cin.ignore(1000,'\n');
                 continue;
             }
             cout<<"Destination:";
-           /* cin>>dest;
+            cin>>dest;
             if (cin.fail()) {
                 cin.clear();
                 cin.ignore(1000,'\n');
@@ -488,7 +518,7 @@ int main() {
         cout<<"Origin: "<<source<<endl<<"Destination: "<<dest<<endl;
         dijkstra(source,dest);
         nodeEdge_t temp=getPath(dest);
-        /*for (long unsigned int i=0; i<temp.points.size(); i++) {
+        for (long unsigned int i=0; i<temp.points.size(); i++) {
             if (i==0||i==temp.points.size()-1)
                 gv->setVertexColor(temp.points[i]->getID(),"yellow");
             else gv->setVertexColor(temp.points[i]->getID(),"green");

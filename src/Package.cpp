@@ -33,7 +33,7 @@ Point * Package::getDeliveryPoint()const{
 Point * Package::getPickUpPoint()const{
 	return this->PickUpPoint;
 }
-
+/*
 void Package::setCor(int cor){
 	this->cor = cor;
 }
@@ -41,3 +41,4 @@ void Package::setCor(int cor){
 int Package::getCor(){
 	return cor;
 }
+*/

@@ -15,19 +15,19 @@
 #include "edgetype.h"
 #include "connection.h"
 
-#define BLUE "BLUE"
-#define RED "RED"
-#define PINK "PINK"
-#define BLACK "BLACK"
-#define WHITE "WHITE"
-#define ORANGE "ORANGE"
-#define YELLOW "YELLOW"
-#define GREEN "GREEN"
-#define CYAN "CYAN"
-#define GRAY "GRAY"
-#define DARK_GRAY "DARK_GRAY"
-#define LIGHT_GRAY "LIGHT_GRAY"
-#define MAGENTA "MAGENTA"
+#define BLUE "BLUE"//2
+#define RED "RED"//origin
+#define PINK "PINK"//3
+#define BLACK "BLACK"//nothing
+#define WHITE "WHITE"//5
+#define ORANGE "ORANGE"//pickup
+#define YELLOW "YELLOW"//delivery
+#define GREEN "GREEN"//1
+#define CYAN "CYAN"//7
+#define GRAY "GRAY"//8
+#define DARK_GRAY "DARK_GRAY"//9
+#define LIGHT_GRAY "LIGHT_GRAY"//4
+#define MAGENTA "MAGENTA"//6
 
 /**
  * Classe que guarda o grafo e o representa. Todas as suas funções retornam um booleano a indicar

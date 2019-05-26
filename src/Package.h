@@ -8,7 +8,7 @@ private:
 	int identifier; //is this the best option?
 	Point *PickUpPoint; //??
 	Point *DeliveryPoint;
-	int cor;
+	//int cor;
 public:
 	Package();
 	Package(int id, Point* PUP, Point* DP);
@@ -17,8 +17,8 @@ public:
 	Point* getPickUpPoint()const;
 	Point* getDeliveryPoint()const;
 	int getIdentifier();
-	void setCor(int cor);
-	int getCor();
+	//void setCor(int cor);
+	//int getCor();
 
 };
 
