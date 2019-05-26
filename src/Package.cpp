@@ -27,6 +27,10 @@ void Package::setDeliveryPoint(Point* DP){
 
 }
 
+void Package::setIdentifier(int ID){
+	this->identifier = ID;
+}
+
 Point * Package::getDeliveryPoint()const{
 	return this->DeliveryPoint;
 }

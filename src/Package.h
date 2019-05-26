@@ -13,6 +13,7 @@ public:
 	Package(int id, Point* PUP, Point* DP);
 	void setPickUpPoint(Point* PUP);
 	void setDeliveryPoint(Point* DP);
+	void setIdentifier(int ID);
 	Point* getPickUpPoint()const;
 	Point* getDeliveryPoint()const;
 	int getIdentifier();

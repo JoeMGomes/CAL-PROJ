@@ -70,7 +70,7 @@ void readMap(string cityName) {
 
     getline(file, line);
     sscanf(line.c_str(), "%d", &temp); //numNos
-
+    unsigned int numNodes = temp;
     while (getline(file, line) && temp != 0) {
         sscanf(line.c_str(), "(%lf, %lf, %lf)", &id, &x, &y);
         if (xOffset == 0 && yOffset == 0) {
@@ -80,7 +80,13 @@ void readMap(string cityName) {
         mainMap.points.push_back(new Point(id,  x -xOffset, yOffset -y));
         temp--;
     }
-    cout << "Completed reading nodes\n";
+
+    if(numNodes == mainMap.points.size()) {
+        cout << "Completed reading nodes\n";
+    } else {
+        cout << "Failed Reading nodes\n";
+        exit(-1);
+    }
     file.close();
 
     string edgeFile = "T09/" + cityName + "/T09_edges_" + cityName + ".txt";
@@ -93,6 +99,7 @@ void readMap(string cityName) {
     }
     getline(file, line);
     sscanf(line.c_str(), "%d", &temp);
+    unsigned int numEdges = temp;
     id = 0;
     while (getline(file, line) && temp != 0) {
         sscanf(line.c_str(), "(%lf, %lf)", &x, &y);
@@ -109,10 +116,14 @@ void readMap(string cityName) {
         id++;
     }
 
-    file.close();
-    cout << "Completed edge reading\n";
-    gv->rearrange();//porque? isto e inutil, o gv ainda nao tem elementos
+    if(numEdges == mainMap.roads.size()) {
+        cout << "Completed reading edges\n";
+    } else {
+        cout << "Failed edges edges\n";
+        exit(-1);
+    }
 
+    file.close();
 }
 
 void initMap() {
@@ -230,8 +241,9 @@ void AdicionaEncomenda(int source, int delivery) {
     Package pacote;
     Point* Source;
     Point* Delivery;
-    //int source=source;//26130574;
-    //int delivery=dest;//=26130608;
+    int ID = 0;
+
+    pacote.setIdentifier(ID);
     cout << "ID of the source point?" << endl;
     //cin >> source;
     cout << "ID of the delivery point?" << endl;
@@ -245,10 +257,35 @@ void AdicionaEncomenda(int source, int delivery) {
         pacote.setDeliveryPoint(Delivery);
         PackagesToDelivery.push_back(pacote);
         cout << "Your order has been added" << endl;
-        //cout<<pacote->getPickUpPoint()->getID()<<"\t"<<pacote->getDeliveryPoint()->getID()<<endl;
-
     }
     else cout << "Your order hasn't been added." << endl << "Please check is the points ID's are correct" << endl;
+
+}
+
+void AdicionaEncomenda() {
+    Package pacote;
+    Point* Source;
+    Point* Delivery;
+    int ID = 0;
+    int source, delivery;
+    cout << "Insert package ID: (no error verification, be careful) ";
+    cin >> ID;
+    pacote.setIdentifier(ID);
+    cout << "ID of the source point?" << endl;
+    cin >> source;
+    cout << "ID of the delivery point?" << endl;
+    cin >> delivery;
+    Source = findPoint(source);
+    Delivery = findPoint(delivery);
+    if(Source != nullptr && Delivery != nullptr) {
+        Source->setType(SOURCE);
+        Delivery->setType(DELIVERY);
+        pacote.setPickUpPoint(Source);
+        pacote.setDeliveryPoint(Delivery);
+        PackagesToDelivery.push_back(pacote);
+        cout << "Your order has been added" << endl;
+    }
+    else cout << "Your order hasn't been added." << endl << "Please check if the points ID's are correct" << endl;
 
 }
 
@@ -258,8 +295,9 @@ void menuControler() {
     cout << "|                         Chose one option                              |" << endl;
     cout << "|                                                                       |" << endl;
     cout << "|      1- See the map                                                   |" << endl;
-    cout << "|      2- See vehicle path to satisfy packages                          |" << endl;
-    cout << "|      3- Exit                                                          |" << endl;
+    cout << "|      2- List all packages                                             |" << endl;
+    cout << "|      3- See vehicle path to satisfy packages                          |" << endl;
+    cout << "|      4- Exit                                                          |" << endl;
     cout << "|                                                                       |" << endl;
     cout << "|                                                                       |" << endl;
     cout << "|_______________________________________________________________________|" << endl;
@@ -273,23 +311,41 @@ void menuControler() {
         break;
     }
     case 2: {
+        cout << "Current packages to delivery:\n";
+
+        for(auto p : PackagesToDelivery) {
+            cout << "ID: " << p.getIdentifier() << "  Source: "<< p.getPickUpPoint()->getID()<<"  Destination: "<< p.getDeliveryPoint()->getID() <<endl;
+        }
+
+        cout << "\nReturning...";
         break;
     }
     case 3: {
+        int trucksNo;
+        cout << "How many trucks: ";
+        cin >> trucksNo;
+        //distributepackages(trucksNo)
+        //NN para distrubuir
         break;
     }
+    case 4: {
+        return;
+    }
+   
     default:
+        cout << "Wrong option. Try Again\n";
         break;
     }
 }
 
 void menuBase() {
+
     cout << endl;
     cout << " _______________________________________________________________________" << endl;
     cout << "|                         Chose one option                              |" << endl;
     cout << "|                                                                       |" << endl;
-    cout << "|      1 - I am a user                                                  |" << endl;
-    cout << "|      2 - Control of the company                                       |" << endl;
+    cout << "|      1 - User mode                                                    |" << endl;
+    cout << "|      2 - Company Mode                                                 |" << endl;
     cout << "|      3 - Exit                                                         |" << endl;
     cout << "|                                                                       |" << endl;
     cout << "|_______________________________________________________________________|" << endl;
@@ -322,6 +378,7 @@ void menuUser() {
     cout << "|                         Chose one option                              |" << endl;
     cout << "|                                                                       |" << endl;
     cout << "|      1 - New Order                                                    |" << endl;
+    cout << "|      2 - Remove Order                                                 |" << endl;
     cout << "|      2 - Exit                                                         |" << endl;
     cout << "|                                                                       |" << endl;
     cout << "|                                                                       |" << endl;
@@ -332,12 +389,33 @@ void menuUser() {
 
     switch(opcao) {
     case 1: {
-        AdicionaEncomenda(26130574,26130608);
-        sleep(2);//porque?
+        AdicionaEncomenda();
         menuUser();
         break;
     }
     case 2: {
+        int ID;
+        cout << "Order ID to remove: ";
+        cin >> ID;
+        bool rem = false;
+        for(auto i = PackagesToDelivery.begin(); i != PackagesToDelivery.end(); i++) {
+            if(i->getIdentifier() == ID) {
+                PackagesToDelivery.erase(i);
+                rem = true;
+                break;
+            }
+        }
+        if (rem) {
+            cout << "Order removed\n";
+            break;
+        }
+        else {
+            cout << "Could not find ID\n";
+            break;
+        }
+
+    }
+    case 3: {
         menuBase();
         break;
     }
@@ -396,85 +474,18 @@ std::vector<nodeEdge_t *> nearestNeighbour(std::vector<Package> packages, Point*
 }
 
 int main() {
-    initMap();
-    readMap("Fafe");
-    AdicionaEncomenda(26130574,26130608);
-    AdicionaEncomenda(1052803108,1242959130);
-    cout<<"Packages:\n";
-    cout<<PackagesToDelivery[0].getPickUpPoint()->getID()<<"\t"<<PackagesToDelivery[0].getDeliveryPoint()->getID()<<endl;
-    cout<<PackagesToDelivery[1].getPickUpPoint()->getID()<<"\t"<<PackagesToDelivery[1].getDeliveryPoint()->getID()<<endl;
+    cout << "Write the name of the map you want.\n";
+    cout << "Options:\nAveiro    Braga   Coimbra\n";
+    cout << "Ermesinde Fafe    Gondomar\n";
+    cout << "Lisboa    Maia    Porto\n";
+    cout << "Viseu     Portugal(Warning: Large file)\n";
 
-    std::vector<nodeEdge_t *> nn = nearestNeighbour(PackagesToDelivery, findPoint(1052802810));
+    std::string mapName;
 
-    //for(auto n : nn) {
-        //updateColors(*n);
-    //}
-    
-    //getchar();
-    //gv->closeWindow();
+    cin >> mapName;
 
-     displayMap(mainMap);
-    //menuBase();
+    readMap(mapName);
+    while(true)
+    menuBase();
 
-    /*int source=402328721,dest= 1238420455;
-    //dijkstra(402328721, 1238420455);
-    //displayMap(getPath(402328721,1238420455), r);
-
-    /* int opcao;
-    cin >> opcao;
-    if (cin.fail()) {
-        cin.clear();
-        cin.ignore(1000,'\n');
-    }
-    switch(opcao) {
-    case 1: {
-
-        while (true) {
-            cout<<"Source:";
-           /* cin>>source;
-            if (cin.fail()) {
-                cin.clear();
-                cin.ignore(1000,'\n');
-                continue;
-            }
-            cout<<"Destination:";
-           /* cin>>dest;
-            if (cin.fail()) {
-                cin.clear();
-                cin.ignore(1000,'\n');
-                continue;
-            }
-            break;
-        }
-        initMap();
-        readMap("Porto");
-        //dijkstra(source,dest);
-        displayMap(mainMap);
-        break;
-    }
-    case 2: {
-        initMap();
-        readMap("Fafe");
-        srand(time(NULL));
-        int source=mainMap.points[rand()%mainMap.points.size()]->getID(),dest=mainMap.points[rand()%mainMap.points.size()]->getID();
-        cout<<"Origin: "<<source<<endl<<"Destination: "<<dest<<endl;
-        dijkstra(source,dest);
-        nodeEdge_t temp=getPath(dest);
-        /*for (long unsigned int i=0; i<temp.points.size(); i++) {
-            if (i==0||i==temp.points.size()-1)
-                gv->setVertexColor(temp.points[i]->getID(),"yellow");
-            else gv->setVertexColor(temp.points[i]->getID(),"green");
-        }
-        for (long unsigned int i=0; i<temp.roads.size(); i++) {
-            gv->setEdgeColor(temp.roads[i]->getID(),"green");
-        }*
-
-        displayMap(mainMap);
-
-        break;
-    }
-    case 3:
-        menuBase();
-        break;
-    }*/
 }
