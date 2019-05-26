@@ -36,7 +36,8 @@ bool compSL(nodeEdge_t i,nodeEdge_t j) {
 GraphViewer *gv;
 nodeEdge_t mainMap;
 vector<Vehicle> Fleet;
-vector<Package> PackagesToDelivery;
+vector<vector<Package>> PackagesToDelivery; // add comentario que eu nao sei o que é esta merda
+Point * centralPoint;
 
 std::vector<nodeEdge_t *> nearestNeighbour(std::vector<Package *> packages);
 
@@ -129,21 +130,57 @@ void readMap(string cityName) {
 void initMap() {
     gv = new GraphViewer(1000, 700, false);
     gv->createWindow(1000, 700);
-    gv->defineVertexColor("blue");
+    gv->defineVertexColor("black");
     gv->defineEdgeColor("black");
 }
 
-void updateColors(nodeEdge_t graph) {
+void updateColors(nodeEdge_t graph, int color) {
+    string cor;
+    switch (color)
+    {
+    case 1:
+        cor = "GREEN";
+        break;
+    case 2:
+        cor = "BLUE";
+        break;
+    case 3:
+        cor = "PINK";
+        break;
+    case 4:
+        cor = "LIGHT_GRAY";
+        break;
+    case 5:
+        cor = "WHITE";
+        break;
+    case 6:
+        cor = "MAGENTA";
+        break;
+    case 7:
+        cor = "CYAN";
+        break;
+    case 8:
+        cor = "GRAY";
+        break;
+    case 9:
+        cor = "DARK_GRAY";
+        break;
+    default:
+        cor = "BLACK";
+        break;
+    }
+
     for (long unsigned int i=1; i<graph.points.size(); i++) {
         if (graph.points[i]->getType()==DELIVERY)
             gv->setVertexColor(graph.points[i]->getID(),"YELLOW");
         else if (graph.points[i]->getType()==SOURCE)
             gv->setVertexColor(graph.points[i]->getID(),"ORANGE");
-        else gv->setVertexColor(graph.points[i]->getID(),"GREEN");
+        else gv->setVertexColor(graph.points[i]->getID(),cor);
     }
     for (long unsigned int i=0; i<graph.roads.size(); i++) {
-        gv->setEdgeColor(graph.roads[i]->getID(),"GREEN");
+        gv->setEdgeColor(graph.roads[i]->getID(), cor);
     }
+    
 }
 
 void displayMap(nodeEdge_t graph) {
@@ -255,7 +292,7 @@ void AdicionaEncomenda(int source, int delivery) {
         Delivery->setType(DELIVERY);
         pacote.setPickUpPoint(Source);
         pacote.setDeliveryPoint(Delivery);
-        PackagesToDelivery.push_back(pacote);
+        PackagesToDelivery[0].push_back(pacote);
         cout << "Your order has been added" << endl;
     }
     else cout << "Your order hasn't been added." << endl << "Please check is the points ID's are correct" << endl;
@@ -286,7 +323,23 @@ void AdicionaEncomenda() {
         cout << "Your order has been added" << endl;
     }
     else cout << "Your order hasn't been added." << endl << "Please check if the points ID's are correct" << endl;
+}
 
+void distributePackages(int n){
+    vector<Package> vec;
+    float angle, divangle=360/n;
+    cout<<"Divangle:"<<divangle;
+    for (int i=1;i<=n;i++){
+        PackagesToDelivery.push_back(vec);
+    }
+    cout << "SIZE" << PackagesToDelivery[0].size();
+    for (long unsigned i=0;i<PackagesToDelivery[0].size();i++){
+        angle = -180 / M_PI *atan2(PackagesToDelivery[0][i].getPickUpPoint()->getY()-centralPoint->getY(),PackagesToDelivery[0][i].getPickUpPoint()->getX()- centralPoint->getX());
+        if (angle<0) angle+=360;
+        cout<<"\t"<<angle;
+        PackagesToDelivery[ceil(angle/divangle)].push_back(PackagesToDelivery[0][i]);
+    }
+    
 }
 
 void menuControler() {
@@ -423,7 +476,7 @@ void menuUser() {
 }
 
 
-std::vector<nodeEdge_t *> nearestNeighbour(std::vector<Package> packages, Point* supportPoint) {
+std::vector<nodeEdge_t *> nearestNeighbour(std::vector<Package> packages, Point* supportPoint, int color) {
 
     cout << "Starting NN\n";
     std::vector<nodeEdge_t *> finalPaths; //vector a retornar
@@ -449,7 +502,7 @@ std::vector<nodeEdge_t *> nearestNeighbour(std::vector<Package> packages, Point*
         auto bestPath = min_element(dists.begin(),dists.end(),compSL);//procura o menor caminho
         int temp =  bestPath - dists.begin();//index do menor caminho
         finalPaths.push_back(&(dists.at(temp)));//coloca o caminho no vetor a retornar
-        updateColors(dists.at(temp));
+        updateColors(dists.at(temp),color);
         currentPoint = pointsToGo.at(temp);//atualiza a posição atual
         cout << "AAA: " << pointsToGo.at(temp)->getType() ;
         if(pointsToGo.at(temp)->getType() == SOURCE) { //Se o ponto era uma Source, coloca a delivery
@@ -466,7 +519,7 @@ std::vector<nodeEdge_t *> nearestNeighbour(std::vector<Package> packages, Point*
 
     dijkstra(currentPoint->getID(), supportPoint->getID());
     auto retPath = getPath(supportPoint->getID());
-    updateColors(retPath);
+    updateColors(retPath,color);
     finalPaths.push_back(&retPath);
     gv->setVertexColor(supportPoint->getID(),RED);
 
@@ -481,11 +534,7 @@ int main() {
     cout << "Viseu     Portugal(Warning: Large file)\n";
 
     std::string mapName;
-
-    cin >> mapName;
-
+    initMap();
     readMap(mapName);
-    while(true)
     menuBase();
-
 }
