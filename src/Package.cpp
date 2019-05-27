@@ -6,10 +6,8 @@ int Package::getIdentifier(){
 	}
 Package::Package(){
 	this->identifier = 0;
-	Point* pup;
-	Point* dp;
-	this->PickUpPoint = pup;
-	this->DeliveryPoint = dp;
+	this->PickUpPoint = nullptr;
+	this->DeliveryPoint = nullptr;
 }
 Package::Package(int id, Point* PUP, Point* DP){
 	this->identifier = id;
@@ -37,12 +35,4 @@ Point * Package::getDeliveryPoint()const{
 Point * Package::getPickUpPoint()const{
 	return this->PickUpPoint;
 }
-/*
-void Package::setCor(int cor){
-	this->cor = cor;
-}
 
-int Package::getCor(){
-	return cor;
-}
-*/

@@ -39,7 +39,8 @@ vector<Vehicle> Fleet;
 vector<vector<Package>> PackagesToDelivery; // add comentario que eu nao sei o que é esta merda
 Point * centralPoint;
 
-std::vector<nodeEdge_t *> nearestNeighbour(std::vector<Package *> packages);
+void menuControler();
+
 
 Point * findPoint(int id) {
 
@@ -180,21 +181,15 @@ void updateColors(nodeEdge_t graph, int color) {
     for (long unsigned int i=0; i<graph.roads.size(); i++) {
         gv->setEdgeColor(graph.roads[i]->getID(), cor);
     }
-    
+
 }
 
 void displayMap(nodeEdge_t graph) {
     for(auto p : graph.points) {
         gv->addNode(p->getID(), p->getX(), p->getY());
-        /*if (p->getType()==DELIVERY) gv->setVertexColor(p->getID(),ORANGE);
-        else if (p->getType()==SOURCE) gv->setVertexColor(p->getID(),YELLOW);
-        else if (p->getType()==PATH) gv->setVertexColor(p->getID(),GREEN);*/
-
-        // gv->setVertexLabel(p->getID(), "cenas");
     }
     for(auto e : graph.roads) {
         gv->addEdge(e->getID(),e->getSource()->getID(),e->getDest()->getID(), EdgeType::UNDIRECTED);
-        //gv->setEdgeLabel(e->getID(),to_string( e->getWeight()));
     }
     gv->rearrange();
 }
@@ -238,7 +233,6 @@ void dijkstra(int sourceID, int destID) {
             }
         }
     }
-
 }
 
 nodeEdge_t getPath(/*int sourceID, */int destID) {
@@ -251,10 +245,9 @@ nodeEdge_t getPath(/*int sourceID, */int destID) {
     Point * source = dest->getPath();
 
     path.push_back(dest);
-    // dest->setType(DELIVERY);
+
     while(source != nullptr) {
         temp=dest->getRoads();
-        //source->setType(PATH);
         path.push_back(source);
         for (unsigned int i=0; i<temp.size(); i++)
             if (temp[i]->getDest()==source) {
@@ -264,7 +257,6 @@ nodeEdge_t getPath(/*int sourceID, */int destID) {
         dest = source;
         source = source->getPath();
     }
-    //path[path.size()-1]->setType(SOURCE);
     path.reserve(path.size());
     cout << "Ret path\n";
     ret.points = path;
@@ -319,162 +311,27 @@ void AdicionaEncomenda() {
         Delivery->setType(DELIVERY);
         pacote.setPickUpPoint(Source);
         pacote.setDeliveryPoint(Delivery);
-        PackagesToDelivery.push_back(pacote);
+        PackagesToDelivery.at(0).push_back(pacote); //MUDEI AQUI
         cout << "Your order has been added" << endl;
     }
     else cout << "Your order hasn't been added." << endl << "Please check if the points ID's are correct" << endl;
 }
 
-void distributePackages(int n){
+void distributePackages(int n) {
     vector<Package> vec;
     float angle, divangle=360/n;
     cout<<"Divangle:"<<divangle;
-    for (int i=1;i<=n;i++){
+    for (int i=1; i<=n; i++) {
         PackagesToDelivery.push_back(vec);
     }
     cout << "SIZE" << PackagesToDelivery[0].size();
-    for (long unsigned i=0;i<PackagesToDelivery[0].size();i++){
+    for (long unsigned i=0; i<PackagesToDelivery[0].size(); i++) {
         angle = -180 / M_PI *atan2(PackagesToDelivery[0][i].getPickUpPoint()->getY()-centralPoint->getY(),PackagesToDelivery[0][i].getPickUpPoint()->getX()- centralPoint->getX());
         if (angle<0) angle+=360;
         cout<<"\t"<<angle;
         PackagesToDelivery[ceil(angle/divangle)].push_back(PackagesToDelivery[0][i]);
     }
-    
 }
-
-void menuControler() {
-    cout << endl;
-    cout << " _______________________________________________________________________" << endl;
-    cout << "|                         Chose one option                              |" << endl;
-    cout << "|                                                                       |" << endl;
-    cout << "|      1- See the map                                                   |" << endl;
-    cout << "|      2- List all packages                                             |" << endl;
-    cout << "|      3- See vehicle path to satisfy packages                          |" << endl;
-    cout << "|      4- Exit                                                          |" << endl;
-    cout << "|                                                                       |" << endl;
-    cout << "|                                                                       |" << endl;
-    cout << "|_______________________________________________________________________|" << endl;
-
-    int opcao;
-    cin >> opcao;
-    switch(opcao) {
-    case 1: {
-        cout << "The red points represent pickup points and the green ones represent delivery points." << endl;
-        displayMap(mainMap);
-        break;
-    }
-    case 2: {
-        cout << "Current packages to delivery:\n";
-
-        for(auto p : PackagesToDelivery) {
-            cout << "ID: " << p.getIdentifier() << "  Source: "<< p.getPickUpPoint()->getID()<<"  Destination: "<< p.getDeliveryPoint()->getID() <<endl;
-        }
-
-        cout << "\nReturning...";
-        break;
-    }
-    case 3: {
-        int trucksNo;
-        cout << "How many trucks: ";
-        cin >> trucksNo;
-        //distributepackages(trucksNo)
-        //NN para distrubuir
-        break;
-    }
-    case 4: {
-        return;
-    }
-   
-    default:
-        cout << "Wrong option. Try Again\n";
-        break;
-    }
-}
-
-void menuBase() {
-
-    cout << endl;
-    cout << " _______________________________________________________________________" << endl;
-    cout << "|                         Chose one option                              |" << endl;
-    cout << "|                                                                       |" << endl;
-    cout << "|      1 - User mode                                                    |" << endl;
-    cout << "|      2 - Company Mode                                                 |" << endl;
-    cout << "|      3 - Exit                                                         |" << endl;
-    cout << "|                                                                       |" << endl;
-    cout << "|_______________________________________________________________________|" << endl;
-
-    int opcao;
-    cin >> opcao;
-
-    switch(opcao) {
-    case 1: {
-        menuUser();
-        break;
-    }
-    case 2: {
-        menuControler();
-        break;
-    }
-    case 3:
-        cout << "The program will end now!" << endl;
-        exit(0);
-    default:
-        cout << "Sorry, not a valid choice. Choose again." << endl;
-        menuBase();
-        break;
-    }
-}
-
-void menuUser() {
-    cout << endl;
-    cout << " _______________________________________________________________________" << endl;
-    cout << "|                         Chose one option                              |" << endl;
-    cout << "|                                                                       |" << endl;
-    cout << "|      1 - New Order                                                    |" << endl;
-    cout << "|      2 - Remove Order                                                 |" << endl;
-    cout << "|      2 - Exit                                                         |" << endl;
-    cout << "|                                                                       |" << endl;
-    cout << "|                                                                       |" << endl;
-    cout << "|_______________________________________________________________________|" << endl;
-
-    int opcao;
-    cin >> opcao;
-
-    switch(opcao) {
-    case 1: {
-        AdicionaEncomenda();
-        menuUser();
-        break;
-    }
-    case 2: {
-        int ID;
-        cout << "Order ID to remove: ";
-        cin >> ID;
-        bool rem = false;
-        for(auto i = PackagesToDelivery.begin(); i != PackagesToDelivery.end(); i++) {
-            if(i->getIdentifier() == ID) {
-                PackagesToDelivery.erase(i);
-                rem = true;
-                break;
-            }
-        }
-        if (rem) {
-            cout << "Order removed\n";
-            break;
-        }
-        else {
-            cout << "Could not find ID\n";
-            break;
-        }
-
-    }
-    case 3: {
-        menuBase();
-        break;
-    }
-    }
-}
-
 
 std::vector<nodeEdge_t *> nearestNeighbour(std::vector<Package> packages, Point* supportPoint, int color) {
 
@@ -526,6 +383,151 @@ std::vector<nodeEdge_t *> nearestNeighbour(std::vector<Package> packages, Point*
     return finalPaths;
 }
 
+void menuBase() {
+
+    cout << endl;
+    cout << " _______________________________________________________________________" << endl;
+    cout << "|                         Chose one option                              |" << endl;
+    cout << "|                                                                       |" << endl;
+    cout << "|      1 - User mode                                                    |" << endl;
+    cout << "|      2 - Company Mode                                                 |" << endl;
+    cout << "|      3 - Exit                                                         |" << endl;
+    cout << "|                                                                       |" << endl;
+    cout << "|_______________________________________________________________________|" << endl;
+
+    int opcao;
+    cin >> opcao;
+
+    switch(opcao) {
+    case 1: {
+        menuUser();
+        break;
+    }
+    case 2: {
+        menuControler();
+        break;
+    }
+    case 3:
+        cout << "The program will end now!" << endl;
+        exit(0);
+    default:
+        cout << "Sorry, not a valid choice. Choose again." << endl;
+        menuBase();
+        break;
+    }
+}
+
+void menuControler() {
+    cout << endl;
+    cout << " _______________________________________________________________________" << endl;
+    cout << "|                         Chose one option                              |" << endl;
+    cout << "|                                                                       |" << endl;
+    cout << "|      1- See the map                                                   |" << endl;
+    cout << "|      2- See vehicle path to satisfy packages                          |" << endl;
+    cout << "|      3- List all packages                                             |" << endl;
+    cout << "|      4- See vehicle path to satisfy packages                          |" << endl;
+    cout << "|      5- Exit                                                          |" << endl;
+    cout << "|                                                                       |" << endl;
+    cout << "|                                                                       |" << endl;
+    cout << "|_______________________________________________________________________|" << endl;
+
+    int opcao;
+    cin >> opcao;
+    switch(opcao) {
+    case 1: {
+        cout << "The red points represent pickup points and the green ones represent delivery points." << endl;
+        displayMap(mainMap);
+        break;
+    }
+    case 2: {
+        cout << "Define Central Point ID: ";
+        int id;
+        cin >> id;
+        centralPoint = findPoint(id);
+        break;
+    }
+    case 3: {
+        cout << "Current packages to delivery:\n";
+
+        for(auto p : PackagesToDelivery) {
+            for(auto i : p)
+                cout << "ID: " << i.getIdentifier() << "  Source: "<< i.getPickUpPoint()->getID()<<"  Destination: "<< i.getDeliveryPoint()->getID() <<endl;
+        }
+
+        cout << "\nReturning...";
+        break;
+    }
+    case 4: {
+        int trucksNo;
+        cout << "How many trucks: ";
+        cin >> trucksNo;
+        distributePackages(trucksNo);
+        for(auto p: PackagesToDelivery) {
+            nearestNeighbour(p,centralPoint,0);
+        }
+        break;
+    }
+    case 5: {
+        return;
+    }
+
+    default:
+        cout << "Wrong option. Try Again\n";
+        break;
+    }
+}
+
+void menuUser() {
+    cout << endl;
+    cout << " _______________________________________________________________________" << endl;
+    cout << "|                         Chose one option                              |" << endl;
+    cout << "|                                                                       |" << endl;
+    cout << "|      1 - New Order                                                    |" << endl;
+    cout << "|      2 - Remove Order                                                 |" << endl;
+    cout << "|      2 - Exit                                                         |" << endl;
+    cout << "|                                                                       |" << endl;
+    cout << "|                                                                       |" << endl;
+    cout << "|_______________________________________________________________________|" << endl;
+
+    int opcao;
+    cin >> opcao;
+
+    switch(opcao) {
+    case 1: {
+        AdicionaEncomenda();
+        menuUser();
+        break;
+    }
+    case 2: {
+        int ID;
+        cout << "Order ID to remove: ";
+        cin >> ID;
+        bool rem = false;
+        for(auto p = PackagesToDelivery.begin(); p != PackagesToDelivery.end(); p++) {
+            for(auto i = p->begin(); i != p->end(); i++)
+                if(i->getIdentifier() == ID) {
+                    p->erase(i);
+                    rem = true;
+                    break;
+                }
+        }
+        if (rem) {
+            cout << "Order removed\n";
+            break;
+        }
+        else {
+            cout << "Could not find ID\n";
+            break;
+        }
+
+    }
+    case 3: {
+        menuBase();
+        break;
+    }
+    }
+}
+
 int main() {
     cout << "Write the name of the map you want.\n";
     cout << "Options:\nAveiro    Braga   Coimbra\n";
@@ -534,7 +536,13 @@ int main() {
     cout << "Viseu     Portugal(Warning: Large file)\n";
 
     std::string mapName;
+    cin >> mapName;
+
     initMap();
     readMap(mapName);
+    int id;
+    cout << "Central Poit ID: ";
+    cin >> id;
+    centralPoint = findPoint(id);
     menuBase();
 }
