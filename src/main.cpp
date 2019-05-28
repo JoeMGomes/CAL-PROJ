@@ -499,7 +499,7 @@ void menuControler() {
 
         auto finish = std::chrono::high_resolution_clock::now();
         auto mili = chrono::duration_cast<chrono::milliseconds>(finish - start).count();
-        cout << "\n Calculating complete algorithm took " << mili << " milliseconds\n";
+        cout << "\nCalculating complete algorithm took " << mili << " milliseconds\n";
 
         displayMap(mainMap);
         break;
@@ -522,7 +522,7 @@ void menuControler() {
 void menuUser() {
     cout << endl;
     cout << " _______________________________________________________________________" << endl;
-    cout << "|                         Escolhe aí bro Ross                           |" << endl;
+    cout << "|                         Choose one option                             |" << endl;
     cout << "|                                                                       |" << endl;
     cout << "|      1 - New Order                                                    |" << endl;
     cout << "|      2 - Remove Order                                                 |" << endl;
