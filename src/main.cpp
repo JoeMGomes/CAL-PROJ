@@ -333,8 +333,10 @@ void distributePackages(int n) {
         sector2=(int)round(ceil(angle/divangle));
         if (sector!=sector2){
             Package aux = Package(PackagesToDelivery[0][i].getIdentifier(),centralPoint,PackagesToDelivery[0][i].getDeliveryPoint());
+            aux.getPickUpPoint()->setType(SOURCE);
             PackagesToDelivery[sector2*2].push_back(aux);
             PackagesToDelivery[0][i].setDeliveryPoint(centralPoint);
+            PackagesToDelivery[0][i].getPickUpPoint()->setType(DELIVERY);
             PackagesToDelivery[sector*2-1].push_back(PackagesToDelivery[0][i]);
             cout<<"uhyuhJ";
         }
@@ -517,6 +519,7 @@ void menuUser() {
     switch(opcao) {
     case 1: {
         AdicionaEncomenda(402328721,1238420455);
+        AdicionaEncomenda(1242959181,26130611);
         menuUser();
         break;
     }
