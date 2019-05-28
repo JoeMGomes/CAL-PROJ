@@ -20,8 +20,6 @@
 void menuUser();
 void menuBase();
 
-//Variaveis globais because fuck it
-
 struct nodeEdge {
     std::vector<Point *> points;
     std::vector<Road *> roads;
@@ -36,7 +34,7 @@ bool compSL(nodeEdge_t i,nodeEdge_t j) {
 GraphViewer *gv;
 nodeEdge_t mainMap;
 vector<Vehicle> Fleet;
-vector<vector<Package>> PackagesToDelivery; // add comentario que eu nao sei o que é esta merda
+vector<vector<Package>> PackagesToDelivery;
 Point * centralPoint;
 
 void menuControler();
@@ -108,8 +106,7 @@ void readMap(string cityName) {
         Point * source = findPoint(x);
         Point * dest = findPoint(y);
         Road * r1 = new Road(id,source, dest);
-        Road * r2 = new Road(id,dest, source);//Se merdar o problema é o id
-
+        Road * r2 = new Road(id,dest, source);
         source->addRoad(r1);
         dest->addRoad(r2);
 
@@ -274,9 +271,9 @@ void AdicionaEncomenda(int source, int delivery) {
 
     pacote.setIdentifier(ID);
     cout << "ID of the source point?" << endl;
-    cin >> source;
+    //cin >> source;
     cout << "ID of the delivery point?" << endl;
-    cin >> delivery;
+    //cin >> delivery;
     Source = findPoint(source);
     Delivery = findPoint(delivery);
     if(Source != nullptr && Delivery != nullptr) {
@@ -396,27 +393,28 @@ void menuBase() {
     cout << "|_______________________________________________________________________|" << endl;
 
     int opcao;
- 
-    while(opcao != 3){
-           cin >> opcao;
-        switch(opcao) {
-        case 1: {
-           menuUser();
-          break;
-        }
-        case 2: {
-          menuControler();
-            break;
-            }
-        case 3:
-            cout << "The program will end now!" << endl;
-            exit(0);
-        default:
-            cout << "Sorry, not a valid choice. Choose again." << endl;
-          menuBase();
-            break;
-        }
+
+
+    cout << "Choose option: ";
+    cin >> opcao;
+    switch(opcao) {
+    case 1: {
+        menuUser();
+        break;
     }
+    case 2: {
+        menuControler();
+        break;
+    }
+    case 3:
+        cout << "The program will end now!" << endl;
+        exit(0);
+    default:
+        cout << "Sorry, not a valid choice. Choose again." << endl;
+        menuBase();
+        break;
+    }
+
 }
 
 void menuControler() {
@@ -434,6 +432,7 @@ void menuControler() {
     cout << "|_______________________________________________________________________|" << endl;
 
     int opcao;
+    cout << "Choose option: ";
     cin >> opcao;
     switch(opcao) {
     case 1: {
@@ -464,19 +463,25 @@ void menuControler() {
         cout << "How many trucks: ";
         cin >> trucksNo;
         distributePackages(trucksNo);
-        for(auto p: PackagesToDelivery) {
-            nearestNeighbour(p,centralPoint,0);
+
+        for(unsigned int i = 1; i < PackagesToDelivery.size(); i++) {
+            nearestNeighbour(PackagesToDelivery.at(i),centralPoint,i);
         }
         break;
     }
     case 5: {
-        return;
+        menuBase();
+        break;
     }
 
     default:
         cout << "Wrong option. Try Again\n";
+        menuControler();
         break;
     }
+
+    menuBase();
+
 }
 
 void menuUser() {
@@ -492,6 +497,7 @@ void menuUser() {
     cout << "|_______________________________________________________________________|" << endl;
 
     int opcao;
+    cout << "Choose option: ";
     cin >> opcao;
 
     switch(opcao) {
@@ -527,24 +533,51 @@ void menuUser() {
         menuBase();
         break;
     }
+    default : {
+        cout << "Wrong option. Try Again\n";
+        menuUser();
+        break;
     }
+    }
+    menuUser();
 }
 
 int main() {
     cout << "Write the name of the map you want.\n";
     cout << "Options:\nAveiro    Braga   Coimbra\n";
     cout << "Ermesinde Fafe    Gondomar\n";
-    cout << "Lisboa    Maia    Porto\n";
-    cout << "Viseu     Portugal(Warning: Large file)\n";
+    cout << "Lisboa*    Maia    Porto\n";
+    cout << "Viseu     Portugal*\n";
+    cout << "*Warning: large files\nMap Name: ";
 
     std::string mapName;
     cin >> mapName;
 
     initMap();
     readMap(mapName);
-    /*int id;
-    cout << "Central Poit ID: ";
-    cin >> id;
-    centralPoint = findPoint(id);*/
+
+    if(mapName== "Aveiro")
+        centralPoint = findPoint(1340357451);
+    else if(mapName =="Braga")
+        centralPoint = findPoint(403629927);
+    else if(mapName == "Coimbra")
+        centralPoint = findPoint(729338589);
+    else if(mapName== "Ermesinde")
+        centralPoint = findPoint(1113220224);
+    else if(mapName == "Fafe")
+        centralPoint = findPoint(26130605);
+    else if(mapName== "Gondomar")
+        centralPoint = findPoint(1165931709);
+    else if(mapName == "Lisboa")
+        centralPoint = findPoint(1206788150);
+    else if(mapName == "Maia")
+        centralPoint = findPoint(1179868708);
+    else if(mapName == "Porto")
+        centralPoint = findPoint(299608108);
+    else if(mapName == "Viseu")
+        centralPoint = findPoint(264357929);
+    else if(mapName == "Portugal")
+        centralPoint = findPoint(158862066);
+
     menuBase();
 }
