@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <chrono>
 #include "SupportPoint.h"
 #include "Package.h"
 
@@ -191,7 +192,9 @@ void displayMap(nodeEdge_t graph) {
 }
 
 void dijkstra(int sourceID, int destID) {
+
     cout << "Startin dijkstra\n";
+    auto start = std::chrono::high_resolution_clock::now();
     cout << sourceID<<"\t"<<destID<<endl;
     Point * source = findPoint(sourceID);
     Point * dest = findPoint(destID);
@@ -229,6 +232,9 @@ void dijkstra(int sourceID, int destID) {
             }
         }
     }
+    auto finish = std::chrono::high_resolution_clock::now();
+	auto mili = chrono::duration_cast<chrono::milliseconds>(finish - start).count();
+    cout << "\nDijkstra took " << mili << " milliseconds\n";
 }
 
 nodeEdge_t getPath(/*int sourceID, */int destID) {
@@ -331,7 +337,7 @@ void distributePackages(int n) {
         angle = -180 / M_PI *atan2(PackagesToDelivery[0][i].getDeliveryPoint()->getY()-centralPoint->getY(),PackagesToDelivery[0][i].getDeliveryPoint()->getX()- centralPoint->getX());
         if (angle<0) angle+=360;
         sector2=(int)round(ceil(angle/divangle));
-        if (sector!=sector2){
+        if (sector!=sector2) {
             Package aux = Package(PackagesToDelivery[0][i].getIdentifier(),centralPoint,PackagesToDelivery[0][i].getDeliveryPoint());
             aux.getPickUpPoint()->setType(SOURCE);
             PackagesToDelivery[sector2*2].push_back(aux);
@@ -478,7 +484,7 @@ void menuControler() {
         cout << "How many trucks: ";
         cin >> trucksNo;
         distributePackages(trucksNo);
-        for(long unsigned int i=1;i<PackagesToDelivery.size();i++) {
+        for(long unsigned int i=1; i<PackagesToDelivery.size(); i++) {
             if (PackagesToDelivery[i].size()!=0)
                 nearestNeighbour(PackagesToDelivery[i],centralPoint,i);
         }
@@ -503,7 +509,7 @@ void menuControler() {
 void menuUser() {
     cout << endl;
     cout << " _______________________________________________________________________" << endl;
-    cout << "|                         Chose one option                              |" << endl;
+    cout << "|                         Escolhe aí bro Ross                           |" << endl;
     cout << "|                                                                       |" << endl;
     cout << "|      1 - New Order                                                    |" << endl;
     cout << "|      2 - Remove Order                                                 |" << endl;
@@ -528,12 +534,12 @@ void menuUser() {
         cout << "Order ID to remove: ";
         cin >> ID;
         bool rem = false;
-        for(long unsigned int i =0;i<PackagesToDelivery[0].size(); i++)
+        for(long unsigned int i =0; i<PackagesToDelivery[0].size(); i++)
             if(PackagesToDelivery[0][i].getIdentifier() == ID) {
                 PackagesToDelivery[0].erase(i+PackagesToDelivery[0].begin());
                 rem = true;
                 break;
-                }
+            }
         if (rem) {
             cout << "Order removed\n";
             break;
