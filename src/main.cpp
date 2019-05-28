@@ -492,11 +492,6 @@ void menuControler() {
         cout << "How many trucks: ";
         cin >> trucksNo;
         distributePackages(trucksNo);
-<<<<<<< HEAD
-        for(long unsigned int i=1; i<PackagesToDelivery.size(); i++) {
-            if (PackagesToDelivery[i].size()!=0)
-                nearestNeighbour(PackagesToDelivery[i],centralPoint,i);
-=======
         for(long unsigned int i=1;i<PackagesToDelivery.size();i++) {
             if (PackagesToDelivery[i].size()!=0){
                     for(long unsigned int x=0;x<PackagesToDelivery[i].size();x++){
@@ -505,7 +500,6 @@ void menuControler() {
                     }
                 nearestNeighbour(PackagesToDelivery[i],centralPoint,(int)round(ceil(i/2.0)));
             }
->>>>>>> 330b0fa93e62ceefa75e0968597544fdccc5bcc5
         }
         displayMap(mainMap);
         break;
