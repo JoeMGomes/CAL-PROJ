@@ -262,6 +262,15 @@ nodeEdge_t getPath(/*int sourceID, */int destID) {
     return ret;
 }
 
+bool checkValidPoints(int p1,int p2){
+    if (p1==p2) return true;
+    dijkstra(centralPoint->getID(),p1);
+    if (getPath(p1).lenght==0) return false;
+    dijkstra(p1,p2);
+    if (getPath(p2).lenght==0) return false;
+    return true;
+}
+
 void AdicionaEncomenda(int source, int delivery) {
     Package pacote;
     Point* Source;
@@ -275,7 +284,7 @@ void AdicionaEncomenda(int source, int delivery) {
     //cin >> delivery;
     Source = findPoint(source);
     Delivery = findPoint(delivery);
-    if(Source != nullptr && Delivery != nullptr) {
+    if (Source != nullptr && Delivery != nullptr && checkValidPoints(source,delivery)) {
         Source->setType(SOURCE);
         Delivery->setType(DELIVERY);
         pacote.setPickUpPoint(Source);
@@ -283,7 +292,7 @@ void AdicionaEncomenda(int source, int delivery) {
         PackagesToDelivery[0].push_back(pacote);
         cout << "Your order has been added" << endl;
     }
-    else cout << "Your order hasn't been added." << endl << "Please check is the points ID's are correct" << endl;
+    else cout << "Your order hasn't been added." << endl << "Please check if the points ID's are correct and if the points are connected." << endl;
 
 }
 
@@ -302,7 +311,7 @@ void AdicionaEncomenda() {
     cin >> delivery;
     Source = findPoint(source);
     Delivery = findPoint(delivery);
-    if(Source != nullptr && Delivery != nullptr) {
+    if (Source != nullptr && Delivery != nullptr && checkValidPoints(source,delivery)) {
         Source->setType(SOURCE);
         Delivery->setType(DELIVERY);
         pacote.setPickUpPoint(Source);
@@ -310,7 +319,7 @@ void AdicionaEncomenda() {
         PackagesToDelivery.at(0).push_back(pacote); //MUDEI AQUI
         cout << "Your order has been added" << endl;
     }
-    else cout << "Your order hasn't been added." << endl << "Please check if the points ID's are correct" << endl;
+    else cout << "Your order hasn't been added." << endl << "Please check if the points ID's are correct and if the points are connected." << endl;
 }
 
 void distributePackages(int n) {
@@ -483,7 +492,7 @@ void menuControler() {
                         PackagesToDelivery[i][x].getPickUpPoint()->setType(SOURCE);
                         PackagesToDelivery[i][x].getDeliveryPoint()->setType(DELIVERY);
                     }
-                nearestNeighbour(PackagesToDelivery[i],centralPoint,i);
+                nearestNeighbour(PackagesToDelivery[i],centralPoint,(int)round(ceil(i/2.0)));
             }
         }
         displayMap(mainMap);
