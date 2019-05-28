@@ -361,6 +361,9 @@ void distributePackages(int n) {
 std::vector<nodeEdge_t *> nearestNeighbour(std::vector<Package> packages, Point* supportPoint, int color) {
 
     cout << "Starting NN\n";
+
+    auto start = std::chrono::high_resolution_clock::now();
+
     std::vector<nodeEdge_t *> finalPaths; //vector a retornar
 
     std::vector<Point*> pointsToGo; //pontos a precorrer a cada iteração
@@ -404,6 +407,10 @@ std::vector<nodeEdge_t *> nearestNeighbour(std::vector<Package> packages, Point*
     updateColors(retPath,color);
     finalPaths.push_back(&retPath);
     gv->setVertexColor(supportPoint->getID(),RED);
+
+       auto finish = std::chrono::high_resolution_clock::now();
+	auto mili = chrono::duration_cast<chrono::milliseconds>(finish - start).count();
+    cout << "\nNearest Neighbor took " << mili << " milliseconds\n";
 
     return finalPaths;
 }
@@ -492,11 +499,6 @@ void menuControler() {
         cout << "How many trucks: ";
         cin >> trucksNo;
         distributePackages(trucksNo);
-<<<<<<< HEAD
-        for(long unsigned int i=1; i<PackagesToDelivery.size(); i++) {
-            if (PackagesToDelivery[i].size()!=0)
-                nearestNeighbour(PackagesToDelivery[i],centralPoint,i);
-=======
         for(long unsigned int i=1;i<PackagesToDelivery.size();i++) {
             if (PackagesToDelivery[i].size()!=0){
                     for(long unsigned int x=0;x<PackagesToDelivery[i].size();x++){
@@ -505,7 +507,6 @@ void menuControler() {
                     }
                 nearestNeighbour(PackagesToDelivery[i],centralPoint,(int)round(ceil(i/2.0)));
             }
->>>>>>> 330b0fa93e62ceefa75e0968597544fdccc5bcc5
         }
         displayMap(mainMap);
         break;
