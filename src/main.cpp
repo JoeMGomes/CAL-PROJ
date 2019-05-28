@@ -336,9 +336,8 @@ void distributePackages(int n) {
             aux.getPickUpPoint()->setType(SOURCE);
             PackagesToDelivery[sector2*2].push_back(aux);
             PackagesToDelivery[0][i].setDeliveryPoint(centralPoint);
-            PackagesToDelivery[0][i].getPickUpPoint()->setType(DELIVERY);
+            PackagesToDelivery[0][i].getDeliveryPoint()->setType(DELIVERY);
             PackagesToDelivery[sector*2-1].push_back(PackagesToDelivery[0][i]);
-            cout<<"uhyuhJ";
         }
         else PackagesToDelivery[sector*2-1].push_back(PackagesToDelivery[0][i]);
     }
@@ -479,8 +478,13 @@ void menuControler() {
         cin >> trucksNo;
         distributePackages(trucksNo);
         for(long unsigned int i=1;i<PackagesToDelivery.size();i++) {
-            if (PackagesToDelivery[i].size()!=0)
+            if (PackagesToDelivery[i].size()!=0){
+                    for(long unsigned int x=0;x<PackagesToDelivery[i].size();x++){
+                        PackagesToDelivery[i][x].getPickUpPoint()->setType(SOURCE);
+                        PackagesToDelivery[i][x].getDeliveryPoint()->setType(DELIVERY);
+                    }
                 nearestNeighbour(PackagesToDelivery[i],centralPoint,i);
+            }
         }
         displayMap(mainMap);
         break;
