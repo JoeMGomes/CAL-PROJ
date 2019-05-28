@@ -274,9 +274,9 @@ void AdicionaEncomenda(int source, int delivery) {
 
     pacote.setIdentifier(ID);
     cout << "ID of the source point?" << endl;
-    //cin >> source;
+    cin >> source;
     cout << "ID of the delivery point?" << endl;
-    //cin >> delivery;
+    cin >> delivery;
     Source = findPoint(source);
     Delivery = findPoint(delivery);
     if(Source != nullptr && Delivery != nullptr) {
@@ -396,24 +396,26 @@ void menuBase() {
     cout << "|_______________________________________________________________________|" << endl;
 
     int opcao;
-    cin >> opcao;
-
-    switch(opcao) {
-    case 1: {
-        menuUser();
-        break;
-    }
-    case 2: {
-        menuControler();
-        break;
-    }
-    case 3:
-        cout << "The program will end now!" << endl;
-        exit(0);
-    default:
-        cout << "Sorry, not a valid choice. Choose again." << endl;
-        menuBase();
-        break;
+ 
+    while(opcao != 3){
+           cin >> opcao;
+        switch(opcao) {
+        case 1: {
+           menuUser();
+          break;
+        }
+        case 2: {
+          menuControler();
+            break;
+            }
+        case 3:
+            cout << "The program will end now!" << endl;
+            exit(0);
+        default:
+            cout << "Sorry, not a valid choice. Choose again." << endl;
+          menuBase();
+            break;
+        }
     }
 }
 
@@ -484,7 +486,7 @@ void menuUser() {
     cout << "|                                                                       |" << endl;
     cout << "|      1 - New Order                                                    |" << endl;
     cout << "|      2 - Remove Order                                                 |" << endl;
-    cout << "|      2 - Exit                                                         |" << endl;
+    cout << "|      3 - Exit                                                         |" << endl;
     cout << "|                                                                       |" << endl;
     cout << "|                                                                       |" << endl;
     cout << "|_______________________________________________________________________|" << endl;
@@ -540,9 +542,9 @@ int main() {
 
     initMap();
     readMap(mapName);
-    int id;
+    /*int id;
     cout << "Central Poit ID: ";
     cin >> id;
-    centralPoint = findPoint(id);
+    centralPoint = findPoint(id);*/
     menuBase();
 }
