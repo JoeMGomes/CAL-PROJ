@@ -193,9 +193,7 @@ void displayMap(nodeEdge_t graph) {
 
 void dijkstra(int sourceID, int destID) {
 
-    cout << "Startin dijkstra\n";
     auto start = std::chrono::high_resolution_clock::now();
-    cout << sourceID<<"\t"<<destID<<endl;
     Point * source = findPoint(sourceID);
     Point * dest = findPoint(destID);
     double oldDistance;
@@ -233,7 +231,7 @@ void dijkstra(int sourceID, int destID) {
         }
     }
     auto finish = std::chrono::high_resolution_clock::now();
-	auto mili = chrono::duration_cast<chrono::milliseconds>(finish - start).count();
+    auto mili = chrono::duration_cast<chrono::milliseconds>(finish - start).count();
     cout << "\nDijkstra took " << mili << " milliseconds\n";
 }
 
@@ -260,15 +258,13 @@ nodeEdge_t getPath(/*int sourceID, */int destID) {
         source = source->getPath();
     }
     path.reserve(path.size());
-    cout << "Ret path\n";
     ret.points = path;
     ret.roads = roads;
     ret.lenght = x;
-    if (x==0) cout<<"Couldn't find path.\n";
     return ret;
 }
 
-bool checkValidPoints(int p1,int p2){
+bool checkValidPoints(int p1,int p2) {
     if (p1==p2) return true;
     dijkstra(centralPoint->getID(),p1);
     if (getPath(p1).lenght==0) return false;
@@ -332,13 +328,10 @@ void distributePackages(int n) {
     vector<Package> vec;
     float angle, divangle=360/n;
     int sector, sector2;
-    cout<<"Divangle:"<<divangle;
     for (int i=0; i< n; i++) {
         PackagesToDelivery.push_back(vec);
         PackagesToDelivery.push_back(vec);
-        cout<<"test";
     }
-    cout << "SIZE" << PackagesToDelivery.size();
     for (long unsigned i=0; i<PackagesToDelivery[0].size(); i++) {
         angle = -180 / M_PI *atan2(PackagesToDelivery[0][i].getPickUpPoint()->getY()-centralPoint->getY(),PackagesToDelivery[0][i].getPickUpPoint()->getX()- centralPoint->getX());
         if (angle<0) angle+=360;
@@ -360,8 +353,6 @@ void distributePackages(int n) {
 
 std::vector<nodeEdge_t *> nearestNeighbour(std::vector<Package> packages, Point* supportPoint, int color) {
 
-    cout << "Starting NN\n";
-
     auto start = std::chrono::high_resolution_clock::now();
 
     std::vector<nodeEdge_t *> finalPaths; //vector a retornar
@@ -370,7 +361,6 @@ std::vector<nodeEdge_t *> nearestNeighbour(std::vector<Package> packages, Point*
 
     for(auto p : packages) { //PUP iniciais
         pointsToGo.push_back(p.getPickUpPoint());
-        cout << "Added PUP "<<p.getPickUpPoint()->getID()<<"\t"<<p.getDeliveryPoint()->getID()<<endl;
     }
 
     std::vector<nodeEdge_t> dists;
@@ -378,7 +368,6 @@ std::vector<nodeEdge_t *> nearestNeighbour(std::vector<Package> packages, Point*
     Point * currentPoint = supportPoint;
     while(pointsToGo.size() != 0) {
         //guarda em dists os caminhos todos calculados
-        cout << "while\n";
         for(unsigned int i = 0; i < pointsToGo.size(); i++) {
             dijkstra(currentPoint->getID(), pointsToGo.at(i)->getID());
             dists.push_back(getPath(pointsToGo.at(i)->getID()));
@@ -389,17 +378,12 @@ std::vector<nodeEdge_t *> nearestNeighbour(std::vector<Package> packages, Point*
         finalPaths.push_back(&(dists.at(temp)));//coloca o caminho no vetor a retornar
         updateColors(dists.at(temp),color);
         currentPoint = pointsToGo.at(temp);//atualiza a posição atual
-        cout << "AAA: " << pointsToGo.at(temp)->getType() ;
         if(pointsToGo.at(temp)->getType() == SOURCE) { //Se o ponto era uma Source, coloca a delivery
             pointsToGo.at(temp) = packages.at(temp).getDeliveryPoint();
-            cout << "switch\n";
         } else if(pointsToGo.at(temp)->getType() == DELIVERY) { //se era uma delivery retira do vetor
             pointsToGo.erase(pointsToGo.begin()+temp);
-            cout << "remove\n";
         }
-        cout << "Size "<< pointsToGo.size() << endl;
         dists.clear();//prepara proxima iteração
-        cout << "Iter\n";
     }
 
     dijkstra(currentPoint->getID(), supportPoint->getID());
@@ -408,8 +392,8 @@ std::vector<nodeEdge_t *> nearestNeighbour(std::vector<Package> packages, Point*
     finalPaths.push_back(&retPath);
     gv->setVertexColor(supportPoint->getID(),RED);
 
-       auto finish = std::chrono::high_resolution_clock::now();
-	auto mili = chrono::duration_cast<chrono::milliseconds>(finish - start).count();
+    auto finish = std::chrono::high_resolution_clock::now();
+    auto mili = chrono::duration_cast<chrono::milliseconds>(finish - start).count();
     cout << "\nNearest Neighbor took " << mili << " milliseconds\n";
 
     return finalPaths;
@@ -498,16 +482,25 @@ void menuControler() {
         int trucksNo;
         cout << "How many trucks: ";
         cin >> trucksNo;
+
+        auto start = std::chrono::high_resolution_clock::now();
+
+
         distributePackages(trucksNo);
-        for(long unsigned int i=1;i<PackagesToDelivery.size();i++) {
-            if (PackagesToDelivery[i].size()!=0){
-                    for(long unsigned int x=0;x<PackagesToDelivery[i].size();x++){
-                        PackagesToDelivery[i][x].getPickUpPoint()->setType(SOURCE);
-                        PackagesToDelivery[i][x].getDeliveryPoint()->setType(DELIVERY);
-                    }
+        for(long unsigned int i=1; i<PackagesToDelivery.size(); i++) {
+            if (PackagesToDelivery[i].size()!=0) {
+                for(long unsigned int x=0; x<PackagesToDelivery[i].size(); x++) {
+                    PackagesToDelivery[i][x].getPickUpPoint()->setType(SOURCE);
+                    PackagesToDelivery[i][x].getDeliveryPoint()->setType(DELIVERY);
+                }
                 nearestNeighbour(PackagesToDelivery[i],centralPoint,(int)round(ceil(i/2.0)));
             }
         }
+
+        auto finish = std::chrono::high_resolution_clock::now();
+        auto mili = chrono::duration_cast<chrono::milliseconds>(finish - start).count();
+        cout << "\n Calculating complete algorithm took " << mili << " milliseconds\n";
+
         displayMap(mainMap);
         break;
     }
@@ -544,8 +537,7 @@ void menuUser() {
 
     switch(opcao) {
     case 1: {
-        AdicionaEncomenda(402328721,1238420455);
-        AdicionaEncomenda(1242959181,26130611);
+        AdicionaEncomenda();
         menuUser();
         break;
     }
