@@ -1,4 +1,4 @@
-# CAL-PROJ SpeedMail - Correio Prioritário
+# SpeedMail - Correio Prioritário
 
 Projeto realizado na unidade curricular de Concepção e Análise de Algoritmos.
 É necesária a pasta /T09 para ler os mapas pretendidos.
