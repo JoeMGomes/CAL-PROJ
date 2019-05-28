@@ -125,6 +125,9 @@ void readMap(string cityName) {
         exit(-1);
     }
 
+    centralPoint=findPoint(1338672296);
+
+
     file.close();
 }
 
@@ -270,13 +273,13 @@ void AdicionaEncomenda(int source, int delivery) {
     Package pacote;
     Point* Source;
     Point* Delivery;
-    int ID = 0;
+    int ID = PackagesToDelivery[0].size();
 
     pacote.setIdentifier(ID);
-    cout << "ID of the source point?" << endl;
-    cin >> source;
-    cout << "ID of the delivery point?" << endl;
-    cin >> delivery;
+    //cout << "ID of the source point?" << endl;
+    //cin >> source;
+    //cout << "ID of the delivery point?" << endl;
+    //cin >> delivery;
     Source = findPoint(source);
     Delivery = findPoint(delivery);
     if(Source != nullptr && Delivery != nullptr) {
@@ -320,16 +323,29 @@ void AdicionaEncomenda() {
 void distributePackages(int n) {
     vector<Package> vec;
     float angle, divangle=360/n;
+    int sector, sector2;
     cout<<"Divangle:"<<divangle;
-    for (int i=1; i<=n; i++) {
+    for (int i=0; i< n; i++) {
         PackagesToDelivery.push_back(vec);
+        PackagesToDelivery.push_back(vec);
+        cout<<"test";
     }
-    cout << "SIZE" << PackagesToDelivery[0].size();
+    cout << "SIZE" << PackagesToDelivery.size();
     for (long unsigned i=0; i<PackagesToDelivery[0].size(); i++) {
         angle = -180 / M_PI *atan2(PackagesToDelivery[0][i].getPickUpPoint()->getY()-centralPoint->getY(),PackagesToDelivery[0][i].getPickUpPoint()->getX()- centralPoint->getX());
         if (angle<0) angle+=360;
-        cout<<"\t"<<angle;
-        PackagesToDelivery[ceil(angle/divangle)].push_back(PackagesToDelivery[0][i]);
+        sector=(int)round(ceil(angle/divangle));
+        angle = -180 / M_PI *atan2(PackagesToDelivery[0][i].getDeliveryPoint()->getY()-centralPoint->getY(),PackagesToDelivery[0][i].getDeliveryPoint()->getX()- centralPoint->getX());
+        if (angle<0) angle+=360;
+        sector2=(int)round(ceil(angle/divangle));
+        if (sector!=sector2){
+            Package aux = Package(PackagesToDelivery[0][i].getIdentifier(),centralPoint,PackagesToDelivery[0][i].getDeliveryPoint());
+            PackagesToDelivery[sector2*2].push_back(aux);
+            PackagesToDelivery[0][i].setDeliveryPoint(centralPoint);
+            PackagesToDelivery[sector*2-1].push_back(PackagesToDelivery[0][i]);
+            cout<<"uhyuhJ";
+        }
+        else PackagesToDelivery[sector*2-1].push_back(PackagesToDelivery[0][i]);
     }
 }
 
@@ -425,7 +441,7 @@ void menuControler() {
     cout << "|                         Chose one option                              |" << endl;
     cout << "|                                                                       |" << endl;
     cout << "|      1- See the map                                                   |" << endl;
-    cout << "|      2- See vehicle path to satisfy packages                          |" << endl;
+    cout << "|      2- Define central point                                          |" << endl;
     cout << "|      3- List all packages                                             |" << endl;
     cout << "|      4- See vehicle path to satisfy packages                          |" << endl;
     cout << "|      5- Exit                                                          |" << endl;
@@ -437,7 +453,8 @@ void menuControler() {
     cin >> opcao;
     switch(opcao) {
     case 1: {
-        cout << "The red points represent pickup points and the green ones represent delivery points." << endl;
+        cout << "The orange points represent pickup points and the yellow ones represent delivery points." << endl;
+        updateColors(mainMap,20);
         displayMap(mainMap);
         break;
     }
@@ -464,9 +481,11 @@ void menuControler() {
         cout << "How many trucks: ";
         cin >> trucksNo;
         distributePackages(trucksNo);
-        for(auto p: PackagesToDelivery) {
-            nearestNeighbour(p,centralPoint,0);
+        for(long unsigned int i=1;i<PackagesToDelivery.size();i++) {
+            if (PackagesToDelivery[i].size()!=0)
+                nearestNeighbour(PackagesToDelivery[i],centralPoint,i);
         }
+        displayMap(mainMap);
         break;
     }
     case 5: {
@@ -496,7 +515,7 @@ void menuUser() {
 
     switch(opcao) {
     case 1: {
-        AdicionaEncomenda();
+        AdicionaEncomenda(402328721,1238420455);
         menuUser();
         break;
     }
@@ -505,14 +524,12 @@ void menuUser() {
         cout << "Order ID to remove: ";
         cin >> ID;
         bool rem = false;
-        for(auto p = PackagesToDelivery.begin(); p != PackagesToDelivery.end(); p++) {
-            for(auto i = p->begin(); i != p->end(); i++)
-                if(i->getIdentifier() == ID) {
-                    p->erase(i);
-                    rem = true;
-                    break;
+        for(long unsigned int i =0;i<PackagesToDelivery[0].size(); i++)
+            if(PackagesToDelivery[0][i].getIdentifier() == ID) {
+                PackagesToDelivery[0].erase(i+PackagesToDelivery[0].begin());
+                rem = true;
+                break;
                 }
-        }
         if (rem) {
             cout << "Order removed\n";
             break;
@@ -542,6 +559,8 @@ int main() {
 
     initMap();
     readMap(mapName);
+    vector<Package> vec;
+    PackagesToDelivery.push_back(vec);
     /*int id;
     cout << "Central Poit ID: ";
     cin >> id;
