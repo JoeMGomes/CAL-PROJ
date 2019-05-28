@@ -321,10 +321,6 @@ void AdicionaEncomenda(int source, int delivery)
     int ID = PackagesToDelivery[0].size();
 
     pacote.setIdentifier(ID);
-    //cout << "ID of the source point?" << endl;
-    //cin >> source;
-    //cout << "ID of the delivery point?" << endl;
-    //cin >> delivery;
     Source = findPoint(source);
     Delivery = findPoint(delivery);
     if (Source != nullptr && Delivery != nullptr && checkValidPoints(source, delivery))
@@ -363,7 +359,7 @@ void AdicionaEncomenda()
         Delivery->setType(DELIVERY);
         pacote.setPickUpPoint(Source);
         pacote.setDeliveryPoint(Delivery);
-        PackagesToDelivery.at(0).push_back(pacote); //MUDEI AQUI
+        PackagesToDelivery.at(0).push_back(pacote); 
         cout << "Your order has been added" << endl;
     }
     else
@@ -520,7 +516,9 @@ void menuControler()
     {
     case 1:
     {
-        cout << "The orange points represent pickup points and the yellow ones represent delivery points." << endl;
+        cout << "The orange points represent pickup points\n";
+        cout << "and the yellow ones represent delivery points.\n";
+        cout << "The red point is the source/support point\n";
         updateColors(mainMap, 20);
         displayMap(mainMap);
         break;

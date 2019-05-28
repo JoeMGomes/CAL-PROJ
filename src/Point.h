@@ -7,7 +7,7 @@ class Road;
 
 enum typeOfPoint{NORMAL, SOURCE, DELIVERY, PATH};
 
-class Point {//Node(?) can change it later
+class Point {
 	private:
 		int id;
 		int x;
