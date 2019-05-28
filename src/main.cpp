@@ -579,7 +579,7 @@ int main() {
     cout << "Write the name of the map you want.\n";
     cout << "Options:\nAveiro    Braga   Coimbra\n";
     cout << "Ermesinde Fafe    Gondomar\n";
-    cout << "Lisboa*    Maia    Porto\n";
+    cout << "Lisboa*   Maia    Porto\n";
     cout << "Viseu     Portugal*\n";
     cout << "*Warning: large files\nMap Name: ";
 
