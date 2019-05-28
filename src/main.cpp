@@ -268,6 +268,15 @@ nodeEdge_t getPath(/*int sourceID, */int destID) {
     return ret;
 }
 
+bool checkValidPoints(int p1,int p2){
+    if (p1==p2) return true;
+    dijkstra(centralPoint->getID(),p1);
+    if (getPath(p1).lenght==0) return false;
+    dijkstra(p1,p2);
+    if (getPath(p2).lenght==0) return false;
+    return true;
+}
+
 void AdicionaEncomenda(int source, int delivery) {
     Package pacote;
     Point* Source;
@@ -281,7 +290,7 @@ void AdicionaEncomenda(int source, int delivery) {
     //cin >> delivery;
     Source = findPoint(source);
     Delivery = findPoint(delivery);
-    if(Source != nullptr && Delivery != nullptr) {
+    if (Source != nullptr && Delivery != nullptr && checkValidPoints(source,delivery)) {
         Source->setType(SOURCE);
         Delivery->setType(DELIVERY);
         pacote.setPickUpPoint(Source);
@@ -289,7 +298,7 @@ void AdicionaEncomenda(int source, int delivery) {
         PackagesToDelivery[0].push_back(pacote);
         cout << "Your order has been added" << endl;
     }
-    else cout << "Your order hasn't been added." << endl << "Please check is the points ID's are correct" << endl;
+    else cout << "Your order hasn't been added." << endl << "Please check if the points ID's are correct and if the points are connected." << endl;
 
 }
 
@@ -308,7 +317,7 @@ void AdicionaEncomenda() {
     cin >> delivery;
     Source = findPoint(source);
     Delivery = findPoint(delivery);
-    if(Source != nullptr && Delivery != nullptr) {
+    if (Source != nullptr && Delivery != nullptr && checkValidPoints(source,delivery)) {
         Source->setType(SOURCE);
         Delivery->setType(DELIVERY);
         pacote.setPickUpPoint(Source);
@@ -316,7 +325,7 @@ void AdicionaEncomenda() {
         PackagesToDelivery.at(0).push_back(pacote); //MUDEI AQUI
         cout << "Your order has been added" << endl;
     }
-    else cout << "Your order hasn't been added." << endl << "Please check if the points ID's are correct" << endl;
+    else cout << "Your order hasn't been added." << endl << "Please check if the points ID's are correct and if the points are connected." << endl;
 }
 
 void distributePackages(int n) {
@@ -342,9 +351,8 @@ void distributePackages(int n) {
             aux.getPickUpPoint()->setType(SOURCE);
             PackagesToDelivery[sector2*2].push_back(aux);
             PackagesToDelivery[0][i].setDeliveryPoint(centralPoint);
-            PackagesToDelivery[0][i].getPickUpPoint()->setType(DELIVERY);
+            PackagesToDelivery[0][i].getDeliveryPoint()->setType(DELIVERY);
             PackagesToDelivery[sector*2-1].push_back(PackagesToDelivery[0][i]);
-            cout<<"uhyuhJ";
         }
         else PackagesToDelivery[sector*2-1].push_back(PackagesToDelivery[0][i]);
     }
@@ -484,9 +492,20 @@ void menuControler() {
         cout << "How many trucks: ";
         cin >> trucksNo;
         distributePackages(trucksNo);
+<<<<<<< HEAD
         for(long unsigned int i=1; i<PackagesToDelivery.size(); i++) {
             if (PackagesToDelivery[i].size()!=0)
                 nearestNeighbour(PackagesToDelivery[i],centralPoint,i);
+=======
+        for(long unsigned int i=1;i<PackagesToDelivery.size();i++) {
+            if (PackagesToDelivery[i].size()!=0){
+                    for(long unsigned int x=0;x<PackagesToDelivery[i].size();x++){
+                        PackagesToDelivery[i][x].getPickUpPoint()->setType(SOURCE);
+                        PackagesToDelivery[i][x].getDeliveryPoint()->setType(DELIVERY);
+                    }
+                nearestNeighbour(PackagesToDelivery[i],centralPoint,(int)round(ceil(i/2.0)));
+            }
+>>>>>>> 330b0fa93e62ceefa75e0968597544fdccc5bcc5
         }
         displayMap(mainMap);
         break;
