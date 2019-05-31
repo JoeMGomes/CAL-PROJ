@@ -6,11 +6,9 @@
 #include <vector>
 #include <algorithm>
 #include <chrono>
-#include "SupportPoint.h"
 #include "Package.h"
 
 #include "graphviewer.h"
-#include "SupportPoint.h"
 #include "Point.h"
 #include "Road.h"
 #include "MutablePriorityQueue.h"
@@ -36,7 +34,6 @@ bool compSL(nodeEdge_t i, nodeEdge_t j)
 
 GraphViewer *gv;
 nodeEdge_t mainMap;
-vector<Vehicle> Fleet;
 vector<vector<Package>> PackagesToDelivery;
 Point *centralPoint;
 
